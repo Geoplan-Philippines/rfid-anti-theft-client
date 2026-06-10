@@ -1,0 +1,120 @@
+<section class="page" aria-labelledby="page-title">
+  <header class="page__head">
+    <div class="page__heading">
+      <h1 id="page-title" class="page__title">Alarm Events</h1>
+      <p class="page__sub">Reads of watched tags at the fixed gate readers, newest first.</p>
+    </div>
+    <p-button
+      label="Refresh"
+      icon="pi pi-refresh"
+      severity="secondary"
+      [outlined]="true"
+      [loading]="loading()"
+      (onClick)="load()"
+    />
+  </header>
+
+  <div class="toolbar">
+    <p class="toolbar__count" aria-live="polite">
+      @if (!loading() && !errorMsg()) {
+        {{ total() }} {{ total() === 1 ? 'event' : 'events' }}
+      }
+    </p>
+  </div>
+
+  <div class="panel">
+    @if (loading()) {
+      <div class="log-scroll">
+        <table class="log" aria-hidden="true">
+          <thead>
+            <tr>
+              <th scope="col" class="log__col-epc">EPC</th>
+              <th scope="col">Reader</th>
+              <th scope="col" class="log__col-date">Scanned</th>
+              <th scope="col" class="log__col-date">Recorded</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of skeletons(); track $index) {
+              <tr>
+                <td><p-skeleton width="12rem" height="0.9rem" /></td>
+                <td><p-skeleton width="6rem" height="0.9rem" /></td>
+                <td><p-skeleton width="9rem" height="0.9rem" /></td>
+                <td><p-skeleton width="9rem" height="0.9rem" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else if (errorMsg()) {
+      <div class="state state--error" role="alert">
+        <i class="pi pi-exclamation-triangle state__icon state__icon--alarm" aria-hidden="true"></i>
+        <p class="state__title">{{ errorMsg() }}</p>
+        <p-button label="Try again" icon="pi pi-refresh" severity="secondary" [outlined]="true" (onClick)="load()" />
+      </div>
+    } @else if (!hasRows()) {
+      <div class="state">
+        <i class="pi pi-shield state__icon" aria-hidden="true"></i>
+        <p class="state__title">No alarm events yet</p>
+        <p class="state__hint">
+          When a watched tag passes a gate reader, the alarm is logged here.
+        </p>
+      </div>
+    } @else {
+      <div class="log-scroll">
+        <table class="log">
+          <caption class="sr-only">Alarm events, newest first</caption>
+          <thead>
+            <tr>
+              <th scope="col" class="log__col-epc">EPC</th>
+              <th scope="col">Reader</th>
+              <th scope="col" class="log__col-date">Scanned</th>
+              <th scope="col" class="log__col-date">Recorded</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (event of items(); track event.id) {
+              <tr>
+                <td>
+                  <div class="log__epc">
+                    <span class="u-mono log__epc-value">{{ event.epc }}</span>
+                    <button
+                      type="button"
+                      class="iconbtn iconbtn--ghost log__copy"
+                      (click)="copyEpc(event.epc)"
+                      pTooltip="Copy EPC"
+                      tooltipPosition="top"
+                      [attr.aria-label]="'Copy EPC ' + event.epc"
+                    >
+                      <i class="pi pi-copy" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <span class="reader">
+                    <i class="pi pi-wifi reader__icon" aria-hidden="true"></i>
+                    <span class="u-mono">{{ event.readerName }}</span>
+                  </span>
+                </td>
+                <td class="u-mono log__date">{{ event.scannedAt | date: 'MMM d, y · HH:mm:ss' }}</td>
+                <td class="u-mono log__date log__date--muted">{{ event.createdAt | date: 'MMM d, y · HH:mm:ss' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="log__foot">
+        <p-paginator
+          [first]="first()"
+          [rows]="limit()"
+          [totalRecords]="total()"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          (onPageChange)="onPage($event)"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="{first}–{last} of {totalRecords}"
+        />
+      </div>
+    }
+  </div>
+</section>

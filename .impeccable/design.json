@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-10T00:00:00Z",
+  "title": "Design System: RFID Anti-Theft Console",
+  "extensions": {
+    "colorMeta": {
+      "cerulean": { "role": "primary", "displayName": "Cerulean", "canonical": "oklch(0.55 0.14 233)", "tonalRamp": ["#001649","#00386d","#00568c","#006da5","#0086bf","#19ace7","#8ad9ff","#cdf9ff"] },
+      "signal-red": { "role": "secondary", "displayName": "Signal Red", "canonical": "oklch(0.55 0.20 27)", "tonalRamp": ["#4e0000","#780000","#9b0000","#b7191c","#d33b36","#ff655a","#ffab9e","#ffdfd6"] },
+      "ok-green": { "role": "tertiary", "displayName": "OK Green", "canonical": "oklch(0.62 0.13 150)", "tonalRamp": ["#002300","#004302","#005f21","#137738","#348f4f","#5cb572","#a3dfaf","#dafce0"] },
+      "amber": { "role": "tertiary", "displayName": "Amber", "canonical": "oklch(0.72 0.15 75)", "tonalRamp": ["#380000","#5c1d00","#7a3a00","#935200","#ac6900","#d48e00","#f6c47e","#ffedc6"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "oklch(0.255 0.015 245)", "tonalRamp": ["#11181e","#1d242a","#41494f","#5c646b","#889098","#b6bfc7","#e2e6e8","#f7fafd"] }
+    },
+    "typographyMeta": {
+      "headline": { "displayName": "Headline", "purpose": "Page titles only (Tag Registry, Alarm Events)." },
+      "title": { "displayName": "Title", "purpose": "Card, section, and dialog headers." },
+      "body": { "displayName": "Body", "purpose": "Default UI and table text; prose caps at 70ch." },
+      "label": { "displayName": "Label", "purpose": "Form labels, table column headers, chip text. Sentence case." },
+      "code": { "displayName": "Code", "purpose": "EPC values, reader IDs, timestamps, counts. IBM Plex Mono, tabular figures." }
+    },
+    "shadows": [
+      { "name": "overlay", "value": "0 6px 24px -8px oklch(0.255 0.03 245 / 0.18)", "purpose": "Dropdowns, popovers, date pickers floating above the page." },
+      { "name": "dialog", "value": "0 16px 48px -12px oklch(0.255 0.03 245 / 0.28)", "purpose": "Modal surfaces above the backdrop." }
+    ],
+    "motion": [
+      { "name": "ease-out-quart", "value": "cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Default easing for state transitions and reveals." },
+      { "name": "duration-fast", "value": "120ms", "purpose": "Hover and focus state shifts." },
+      { "name": "duration-base", "value": "180ms", "purpose": "Dropdowns, chip changes, row selection." },
+      { "name": "duration-overlay", "value": "220ms", "purpose": "Dialog and toast enter/exit." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single main action per view (e.g. Add tag).",
+      "html": "<button class=\"ds-btn-primary\">Add tag</button>",
+      "css": ".ds-btn-primary{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:0.75rem;font-weight:500;letter-spacing:0.01em;height:36px;padding:0 16px;color:#fff;background:#00649b;border:none;border-radius:4px;cursor:pointer;transition:background 120ms cubic-bezier(0.25,1,0.5,1);}.ds-btn-primary:hover{background:#005281;}.ds-btn-primary:active{background:#00425f;}.ds-btn-primary:focus-visible{outline:2px solid #007db5;outline-offset:2px;}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "The default for most actions; quiet white with a hairline.",
+      "html": "<button class=\"ds-btn-secondary\">Export</button>",
+      "css": ".ds-btn-secondary{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:0.75rem;font-weight:500;letter-spacing:0.01em;height:36px;padding:0 16px;color:#0f1820;background:#fff;border:1px solid #ccd2d5;border-radius:4px;cursor:pointer;transition:background 120ms cubic-bezier(0.25,1,0.5,1),border-color 120ms;}.ds-btn-secondary:hover{background:#f1f6f8;border-color:#b6bfc7;}.ds-btn-secondary:focus-visible{outline:2px solid #007db5;outline-offset:2px;}"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive confirm (delete tag) and the primary action in a live-alarm context.",
+      "html": "<button class=\"ds-btn-danger\">Delete tag</button>",
+      "css": ".ds-btn-danger{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:0.75rem;font-weight:500;letter-spacing:0.01em;height:36px;padding:0 16px;color:#fff;background:#be000d;border:none;border-radius:4px;cursor:pointer;transition:background 120ms cubic-bezier(0.25,1,0.5,1);}.ds-btn-danger:hover{background:#9b0000;}.ds-btn-danger:focus-visible{outline:2px solid #cc2827;outline-offset:2px;}"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Filter the registry by EPC or label.",
+      "html": "<div class=\"ds-field\"><svg class=\"ds-field-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M21 21l-4.3-4.3M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg><input class=\"ds-input\" placeholder=\"Search EPC or label\"/></div>",
+      "css": ".ds-field{position:relative;display:inline-flex;align-items:center;}.ds-field-icon{position:absolute;left:10px;width:16px;height:16px;color:#5c646b;pointer-events:none;}.ds-input{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:0.875rem;height:36px;padding:0 12px 0 32px;color:#0f1820;background:#fff;border:1px solid #ccd2d5;border-radius:4px;min-width:240px;transition:border-color 120ms,box-shadow 120ms;}.ds-input::placeholder{color:#5c646b;}.ds-input:focus{outline:none;border-color:#007db5;box-shadow:0 0 0 2px #007db5;}"
+    },
+    {
+      "name": "Alarm Status Chip",
+      "kind": "chip",
+      "refersTo": "status-chip-alarm",
+      "description": "Wash-tinted chip with dot, icon-word, never color alone.",
+      "html": "<span class=\"ds-chip ds-chip-alarm\"><span class=\"ds-dot\"></span><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 2l10 18H2L12 2zm0 7v5m0 3v.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/></svg>Alarm</span>",
+      "css": ".ds-chip{display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:0.75rem;font-weight:500;letter-spacing:0.01em;padding:2px 8px;border-radius:4px;}.ds-chip svg{width:13px;height:13px;}.ds-dot{width:6px;height:6px;border-radius:999px;}.ds-chip-alarm{background:#ffe8e4;color:#9b1f1d;}.ds-chip-alarm .ds-dot{background:#cc2827;}"
+    },
+    {
+      "name": "Active Status Chip",
+      "kind": "chip",
+      "refersTo": "status-chip-active",
+      "description": "A watched tag in nominal state.",
+      "html": "<span class=\"ds-chip ds-chip-active\"><span class=\"ds-dot\"></span><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M20 6L9 17l-5-5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>Active</span>",
+      "css": ".ds-chip-active{background:#e4f8e7;color:#115629;}.ds-chip-active .ds-dot{background:#429c5a;}.ds-chip-active svg{width:13px;height:13px;}"
+    },
+    {
+      "name": "Active Nav Item",
+      "kind": "nav",
+      "refersTo": "nav-item-active",
+      "description": "Side-nav entry in active state with leading marker.",
+      "html": "<a class=\"ds-nav-item is-active\" href=\"#\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M3 9h18\" stroke=\"currentColor\" stroke-width=\"2\"/></svg>Tag Registry</a>",
+      "css": ".ds-nav-item{position:relative;display:flex;align-items:center;gap:10px;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:0.875rem;font-weight:500;height:38px;padding:0 12px;color:#5c646b;border-radius:4px;text-decoration:none;transition:background 120ms,color 120ms;}.ds-nav-item svg{width:18px;height:18px;}.ds-nav-item:hover{background:#f1f6f8;color:#0f1820;}.ds-nav-item.is-active{background:#dcf3ff;color:#00649b;}.ds-nav-item.is-active::before{content:'';position:absolute;left:0;top:7px;bottom:7px;width:2px;border-radius:2px;background:#007db5;}"
+    },
+    {
+      "name": "Registry Table Row",
+      "kind": "custom",
+      "refersTo": "data-table",
+      "description": "Marquee component: EPC/ID/time columns in mono, alarm row tinted.",
+      "html": "<table class=\"ds-table\"><thead><tr><th>EPC</th><th>Label</th><th>Status</th><th>Last seen</th></tr></thead><tbody><tr><td class=\"ds-mono\">E280 6894 0000 4012 AB</td><td>Reel cart #14</td><td><span class=\"ds-chip ds-chip-active\"><span class=\"ds-dot\"></span>Active</span></td><td class=\"ds-mono\">2026-06-10 08:42</td></tr><tr class=\"is-alarm\"><td class=\"ds-mono\">E280 6894 0000 4188 C2</td><td>Tool tray A</td><td><span class=\"ds-chip ds-chip-alarm\"><span class=\"ds-dot\"></span>Alarm</span></td><td class=\"ds-mono\">2026-06-10 09:15</td></tr></tbody></table>",
+      "css": ".ds-table{width:100%;border-collapse:collapse;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:0.875rem;color:#1d242a;}.ds-table th{text-align:left;font-size:0.75rem;font-weight:600;letter-spacing:0.01em;color:#0f1820;background:#f1f6f8;padding:8px 12px;border-bottom:1px solid #e1e6e9;}.ds-table td{padding:10px 12px;border-bottom:1px solid #e1e6e9;}.ds-table tbody tr:hover{background:#f1f6f8;}.ds-table .is-alarm{background:#fff4f1;}.ds-table .is-alarm:hover{background:#ffe8e4;}.ds-mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:0.8125rem;font-weight:500;font-variant-numeric:tabular-nums;color:#0f1820;}.ds-chip{display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;font-weight:500;padding:2px 8px;border-radius:4px;}.ds-dot{width:6px;height:6px;border-radius:999px;}.ds-chip-active{background:#e4f8e7;color:#115629;}.ds-chip-active .ds-dot{background:#429c5a;}.ds-chip-alarm{background:#ffe8e4;color:#9b1f1d;}.ds-chip-alarm .ds-dot{background:#cc2827;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Instrument Panel",
+    "overview": "This is the read-out for a piece of equipment, not an app being sold. Surfaces are quiet white under a faint cool daylight canvas; structure is drawn with hairlines, not boxes-in-boxes; every EPC, reader ID, and timestamp is set in monospace so codes read like measurements. One cerulean carries identity and intent. Alarm red stays in a locked drawer and only appears when a watched tag is actually detected. The register is product: the design serves the task and then disappears.",
+    "keyCharacteristics": [
+      "Light, pure-white surfaces on a faint cool canvas; depth from hairlines, not shadow.",
+      "One cerulean for identity; alarm red rationed to genuine alarm states only.",
+      "Monospace for every machine value (EPC, reader, timestamp, counts).",
+      "Calm density: comfortable, scannable rows, never a wall of gray.",
+      "State is never color-only: color + icon + text, always."
+    ],
+    "rules": [
+      { "name": "The Locked-Drawer Rule", "body": "Signal Red is forbidden as decoration. It appears only where a real watched tag has been detected: alarm rows, the active-alarm banner, the alarm status chip and its count. If red is on screen, something is actually wrong.", "section": "colors" },
+      { "name": "The Whisper Tint Rule", "body": "Status is a wash-tinted chip with dark ink and a colored dot, not a saturated block. Saturated fills are reserved for the single most urgent affordance on a screen.", "section": "colors" },
+      { "name": "The Machine-Value Rule", "body": "Anything the hardware produces (EPC, reader ID, timestamp, count) is set in IBM Plex Mono with tabular figures. Human language stays in Plex Sans.", "section": "typography" },
+      { "name": "The Two-Step Rule", "body": "Hierarchy comes from at most two visible weights (400 and 600) plus scale. No light-weight body, no third typeface.", "section": "typography" },
+      { "name": "The Flat-Until-Floating Rule", "body": "A surface that is part of the layout gets a hairline and no shadow. A surface that floats above the layout gets a shadow and no heavy border.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep Signal Red in the locked drawer: alarm rows, alarm chip, live-alarm banner, alarm count. Nowhere else.",
+      "Do set every EPC, reader ID, timestamp, and count in IBM Plex Mono with tabular figures.",
+      "Do pair every status with an icon and a text label; color is the third signal, never the only one.",
+      "Do draw structure with hairlines and the canvas/surface step; keep resting surfaces flat.",
+      "Do keep Ink Muted (#5c646b) as the lightest text on screen; bump toward Ink if a value matters.",
+      "Do give the data table the most care: alignment, mono columns, a teaching empty state, a visible focus and keyboard path."
+    ],
+    "donts": [
+      "Don't ship the stock PrimeNG Aura theme; override the tokens so nothing reads as a sample app.",
+      "Don't build a generic AI dashboard: no gradient stat cards, no oversized hero metric, no decorative charts, no identical icon-card grid.",
+      "Don't drift toward legacy ERP: no dense gray forms, no toolbar thickets, no borders-inside-borders.",
+      "Don't add flashy or playful flourishes: no gamified color, no bounce/elastic motion, no animation that doesn't convey state.",
+      "Don't use a border-left/border-right colored stripe as an accent on rows, cards, or alerts.",
+      "Don't use gradient text, decorative glassmorphism, or a saturated status fill where a wash tint will do.",
+      "Don't signal any state by color alone, and never animate the alarm emphasis as the only cue (respect prefers-reduced-motion)."
+    ]
+  }
+}

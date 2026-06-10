@@ -1,0 +1,182 @@
+<section class="page" aria-labelledby="page-title">
+  <header class="page__head">
+    <div class="page__heading">
+      <h1 id="page-title" class="page__title">Tag Registry</h1>
+      <p class="page__sub">Watched EPCs the fixed readers raise an alarm on.</p>
+    </div>
+    <p-button label="Add tag" icon="pi pi-plus" (onClick)="openCreate()" />
+  </header>
+
+  <div class="toolbar">
+    <div class="search">
+      <i class="pi pi-search search__icon" aria-hidden="true"></i>
+      <input
+        pInputText
+        class="search__input"
+        type="text"
+        [value]="searchTerm()"
+        (input)="onSearchInput($event)"
+        placeholder="Search EPC or label"
+        aria-label="Search tags by EPC or label"
+      />
+      @if (searchTerm()) {
+        <button type="button" class="search__clear" (click)="clearSearch()" aria-label="Clear search">
+          <i class="pi pi-times" aria-hidden="true"></i>
+        </button>
+      }
+    </div>
+    <p class="toolbar__count" aria-live="polite">
+      @if (!loading() && !errorMsg()) {
+        @if (isSearching()) {
+          {{ total() }} {{ total() === 1 ? 'match' : 'matches' }}
+        } @else {
+          {{ total() }} watched {{ total() === 1 ? 'tag' : 'tags' }}
+        }
+      }
+    </p>
+  </div>
+
+  <div class="panel">
+    @if (loading()) {
+      <div class="reg-scroll">
+        <table class="reg" aria-hidden="true">
+          <thead>
+            <tr>
+              <th scope="col" class="reg__col-epc">EPC</th>
+              <th scope="col">Label</th>
+              <th scope="col" class="reg__col-date">Added</th>
+              <th scope="col" class="reg__col-date">Updated</th>
+              <th scope="col" class="reg__col-actions"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of skeletons(); track $index) {
+              <tr>
+                <td><p-skeleton width="11rem" height="0.9rem" /></td>
+                <td><p-skeleton width="7rem" height="0.9rem" /></td>
+                <td><p-skeleton width="8rem" height="0.9rem" /></td>
+                <td><p-skeleton width="8rem" height="0.9rem" /></td>
+                <td><p-skeleton width="3.5rem" height="0.9rem" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else if (errorMsg()) {
+      <div class="state state--error" role="alert">
+        <i class="pi pi-exclamation-triangle state__icon state__icon--alarm" aria-hidden="true"></i>
+        <p class="state__title">{{ errorMsg() }}</p>
+        <p-button label="Try again" icon="pi pi-refresh" severity="secondary" [outlined]="true" (onClick)="load()" />
+      </div>
+    } @else if (!hasRows()) {
+      @if (isSearching()) {
+        <div class="state">
+          <i class="pi pi-search state__icon" aria-hidden="true"></i>
+          <p class="state__title">No tags match &ldquo;{{ activeSearch() }}&rdquo;</p>
+          <p class="state__hint">Check the EPC, or try a shorter term.</p>
+          <p-button label="Clear search" severity="secondary" [text]="true" (onClick)="clearSearch()" />
+        </div>
+      } @else {
+        <div class="state">
+          <i class="pi pi-inbox state__icon" aria-hidden="true"></i>
+          <p class="state__title">No watched tags yet</p>
+          <p class="state__hint">
+            Add an EPC to start monitoring it. The readers raise an alarm when a watched tag passes a gate.
+          </p>
+          <p-button label="Add tag" icon="pi pi-plus" (onClick)="openCreate()" />
+        </div>
+      }
+    } @else {
+      <div class="reg-scroll">
+        <table class="reg">
+          <caption class="sr-only">Watched tags, newest first</caption>
+          <thead>
+            <tr>
+              <th scope="col" class="reg__col-epc">EPC</th>
+              <th scope="col">Label</th>
+              <th scope="col" class="reg__col-date">Added</th>
+              <th scope="col" class="reg__col-date">Updated</th>
+              <th scope="col" class="reg__col-actions"><span class="sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (tag of items(); track tag.id) {
+              <tr>
+                <td>
+                  <div class="reg__epc">
+                    <span class="u-mono reg__epc-value">{{ tag.epc | epcFormat }}</span>
+                    <button
+                      type="button"
+                      class="iconbtn iconbtn--ghost reg__copy"
+                      (click)="copyEpc(tag.epc)"
+                      pTooltip="Copy EPC"
+                      tooltipPosition="top"
+                      [attr.aria-label]="'Copy EPC ' + (tag.epc | epcFormat)"
+                    >
+                      <i class="pi pi-copy" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  @if (tag.label) {
+                    <span class="reg__label">{{ tag.label }}</span>
+                  } @else {
+                    <span class="reg__unlabeled">Unlabeled</span>
+                  }
+                </td>
+                <td class="u-mono reg__date">{{ tag.createdAt | date: 'MMM d, y · HH:mm' }}</td>
+                <td class="u-mono reg__date">{{ tag.updatedAt | date: 'MMM d, y · HH:mm' }}</td>
+                <td>
+                  <div class="reg__actions">
+                    <button
+                      type="button"
+                      class="iconbtn"
+                      (click)="openEdit(tag)"
+                      pTooltip="Edit"
+                      tooltipPosition="top"
+                      [attr.aria-label]="'Edit ' + (tag.epc | epcFormat)"
+                    >
+                      <i class="pi pi-pencil" aria-hidden="true"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="iconbtn iconbtn--danger"
+                      (click)="onDelete(tag)"
+                      pTooltip="Delete"
+                      tooltipPosition="top"
+                      [attr.aria-label]="'Delete ' + (tag.epc | epcFormat)"
+                    >
+                      <i class="pi pi-trash" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="reg__foot">
+        <p-paginator
+          [first]="first()"
+          [rows]="limit()"
+          [totalRecords]="total()"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          (onPageChange)="onPage($event)"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="{first}–{last} of {totalRecords}"
+        />
+      </div>
+    }
+  </div>
+
+  <app-tag-registry-form-dialog
+    [open]="dialogOpen()"
+    [mode]="dialogMode()"
+    [tag]="editingTag()"
+    [submitting]="submitting()"
+    [serverError]="formError()"
+    (save)="onSave($event)"
+    (cancelled)="closeDialog()"
+  />
+</section>

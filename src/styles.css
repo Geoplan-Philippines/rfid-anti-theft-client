@@ -1,0 +1,141 @@
+/* Anti-Theft Console — global stylesheet.
+   North Star: "The Instrument Panel." Tokens are canonical here; see DESIGN.md.
+   Cascade order: PrimeNG sits between Tailwind's base (preflight) and utilities,
+   so Tailwind utilities win over PrimeNG and PrimeNG wins over preflight. */
+@layer theme, base, primeng, components, utilities, app;
+
+@import 'tailwindcss';
+@import 'primeicons/primeicons.css';
+
+:root {
+  /* Brand */
+  --color-primary: oklch(0.55 0.14 233);
+  --color-primary-strong: oklch(0.47 0.14 233);
+  --color-primary-hover: oklch(0.42 0.14 233);
+  --color-primary-wash: oklch(0.95 0.03 233);
+  --color-on-color: oklch(1 0 0);
+
+  /* Neutrals (cool, hue 233) */
+  --color-canvas: oklch(0.985 0.005 233);
+  --color-surface: oklch(1 0 0);
+  --color-surface-sunken: oklch(0.97 0.006 233);
+  --color-hairline: oklch(0.922 0.006 233);
+  --color-hairline-strong: oklch(0.86 0.008 233);
+  --color-ink: oklch(0.255 0.015 245);
+  --color-ink-strong: oklch(0.205 0.02 245);
+  --color-ink-muted: oklch(0.50 0.015 245);
+
+  /* Signal */
+  --color-danger: oklch(0.55 0.20 27);
+  --color-danger-strong: oklch(0.50 0.21 27);
+  --color-danger-wash: oklch(0.955 0.035 27);
+  --color-danger-ink: oklch(0.45 0.16 27);
+  --color-ok: oklch(0.62 0.13 150);
+  --color-ok-wash: oklch(0.96 0.03 150);
+  --color-ok-ink: oklch(0.40 0.10 150);
+  --color-amber: oklch(0.72 0.15 75);
+  --color-amber-wash: oklch(0.96 0.05 75);
+  --color-amber-ink: oklch(0.45 0.09 75);
+
+  /* Type */
+  --font-sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-pill: 999px;
+
+  /* Elevation (overlays only) */
+  --shadow-overlay: 0 6px 24px -8px oklch(0.255 0.03 245 / 0.18);
+  --shadow-dialog: 0 16px 48px -12px oklch(0.255 0.03 245 / 0.28);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --dur-fast: 120ms;
+  --dur-base: 180ms;
+  --dur-overlay: 220ms;
+
+  /* Z-index scale */
+  --z-sticky: 100;
+  --z-overlay: 1000;
+  --z-modal: 1100;
+  --z-toast: 1200;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'cv05' 1;
+  }
+
+  h1, h2, h3, h4 {
+    color: var(--color-ink-strong);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  ::selection {
+    background: var(--color-primary-wash);
+    color: var(--color-primary-strong);
+  }
+
+  /* One focus treatment everywhere: a 2px cerulean ring at an offset. */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+@layer app {
+  /* Every machine value (EPC, reader, timestamp, count) is monospace + tabular. */
+  .u-mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'zero' 1;
+    letter-spacing: 0;
+  }
+
+  .u-tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Quiet, narrow scrollbars so dense tables don't get a chrome-heavy gutter. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-hairline-strong) transparent;
+  }
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-hairline-strong);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: var(--radius-pill);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
