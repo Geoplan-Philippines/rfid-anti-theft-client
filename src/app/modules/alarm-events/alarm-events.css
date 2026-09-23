@@ -82,6 +82,12 @@
 .log__col-date {
   width: 12rem;
 }
+.log__col-status {
+  width: 8rem;
+}
+.log__col-capture {
+  width: 5.5rem;
+}
 
 .log__epc {
   display: flex;
@@ -106,6 +112,14 @@
 }
 .log__date--muted {
   opacity: 0.7;
+}
+
+/* Alert row highlight */
+.row--alert {
+  border-left: 3px solid var(--color-danger, #ef4444);
+}
+.row--alert td:first-child {
+  padding-left: calc(0.875rem - 3px);
 }
 
 .reader {
@@ -142,6 +156,68 @@
 }
 .iconbtn .pi {
   font-size: 0.875rem;
+}
+
+/* CCTV capture thumbnail */
+.capture-thumb {
+  position: relative;
+  display: block;
+  width: 3.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--color-surface-sunken);
+  padding: 0;
+  transition: border-color var(--dur-fast);
+}
+.capture-thumb:hover {
+  border-color: var(--color-primary);
+}
+.capture-thumb__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.capture-thumb__overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 0.75rem;
+  opacity: 0;
+  transition: opacity var(--dur-fast);
+}
+.capture-thumb:hover .capture-thumb__overlay {
+  opacity: 1;
+}
+
+/* Preview dialog */
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.preview__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+}
+.preview__meta p {
+  margin: 0;
+}
+.preview__img {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-hairline);
+}
+
+.u-muted {
+  color: var(--color-ink-muted);
 }
 
 .log__foot {

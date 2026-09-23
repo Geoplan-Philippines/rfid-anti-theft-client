@@ -10,6 +10,8 @@ export interface AlarmEvent {
   readerName: string;
   /** When the reader physically scanned the tag. */
   scannedAt: string;
+  /** Relative URL to the CCTV snapshot taken on alarm, if any. */
+  captureImageUrl: string | null;
   /** When the server persisted the alarm. */
   createdAt: string;
 }

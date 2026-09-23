@@ -30,6 +30,8 @@
             <tr>
               <th scope="col" class="log__col-epc">EPC</th>
               <th scope="col">Reader</th>
+              <th scope="col" class="log__col-status">Status</th>
+              <th scope="col" class="log__col-capture">Capture</th>
               <th scope="col" class="log__col-date">Scanned</th>
               <th scope="col" class="log__col-date">Recorded</th>
             </tr>
@@ -39,6 +41,8 @@
               <tr>
                 <td><p-skeleton width="12rem" height="0.9rem" /></td>
                 <td><p-skeleton width="6rem" height="0.9rem" /></td>
+                <td><p-skeleton width="5rem" height="0.9rem" /></td>
+                <td><p-skeleton width="4rem" height="0.9rem" /></td>
                 <td><p-skeleton width="9rem" height="0.9rem" /></td>
                 <td><p-skeleton width="9rem" height="0.9rem" /></td>
               </tr>
@@ -68,13 +72,15 @@
             <tr>
               <th scope="col" class="log__col-epc">EPC</th>
               <th scope="col">Reader</th>
+              <th scope="col" class="log__col-status">Status</th>
+              <th scope="col" class="log__col-capture">Capture</th>
               <th scope="col" class="log__col-date">Scanned</th>
               <th scope="col" class="log__col-date">Recorded</th>
             </tr>
           </thead>
           <tbody>
             @for (event of items(); track event.id) {
-              <tr>
+              <tr [class.row--alert]="event.captureImageUrl">
                 <td>
                   <div class="log__epc">
                     <span class="u-mono log__epc-value">{{ event.epc }}</span>
@@ -95,6 +101,36 @@
                     <i class="pi pi-wifi reader__icon" aria-hidden="true"></i>
                     <span class="u-mono">{{ event.readerName }}</span>
                   </span>
+                </td>
+                <td>
+                  @if (event.captureImageUrl) {
+                    <p-tag severity="danger" value="THEFT ALERT" icon="pi pi-exclamation-triangle" />
+                  } @else {
+                    <p-tag severity="info" value="Logged" icon="pi pi-check" />
+                  }
+                </td>
+                <td>
+                  @if (getCaptureUrl(event); as url) {
+                    <button
+                      type="button"
+                      class="capture-thumb"
+                      (click)="openPreview(event)"
+                      pTooltip="View CCTV capture"
+                      tooltipPosition="top"
+                    >
+                      <img
+                        [src]="url"
+                        alt="CCTV capture"
+                        class="capture-thumb__img"
+                        loading="lazy"
+                      />
+                      <span class="capture-thumb__overlay">
+                        <i class="pi pi-search-plus" aria-hidden="true"></i>
+                      </span>
+                    </button>
+                  } @else {
+                    <span class="u-muted">—</span>
+                  }
                 </td>
                 <td class="u-mono log__date">{{ event.scannedAt | date: 'MMM d, y · HH:mm:ss' }}</td>
                 <td class="u-mono log__date log__date--muted">{{ event.createdAt | date: 'MMM d, y · HH:mm:ss' }}</td>
@@ -118,3 +154,31 @@
     }
   </div>
 </section>
+
+<!-- CCTV Capture Preview Dialog -->
+<p-dialog
+  header="CCTV Capture"
+  [visible]="previewVisible()"
+  (visibleChange)="closePreview()"
+  [modal]="true"
+  [closable]="true"
+  [dismissableMask]="true"
+  [style]="{ 'max-width': '720px', width: '95vw' }"
+>
+  @if (previewEvent(); as evt) {
+    <div class="preview">
+      <div class="preview__meta">
+        <p><strong>EPC:</strong> <span class="u-mono">{{ evt.epc }}</span></p>
+        <p><strong>Reader:</strong> {{ evt.readerName || '—' }}</p>
+        <p><strong>Time:</strong> {{ evt.scannedAt | date: 'MMM d, y · HH:mm:ss' }}</p>
+      </div>
+      @if (getCaptureUrl(evt); as url) {
+        <img
+          [src]="url"
+          alt="CCTV capture for EPC {{ evt.epc }}"
+          class="preview__img"
+        />
+      }
+    </div>
+  }
+</p-dialog>

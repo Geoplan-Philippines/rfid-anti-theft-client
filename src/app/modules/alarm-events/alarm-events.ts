@@ -15,8 +15,11 @@ import { ButtonModule } from 'primeng/button';
 import { PaginatorModule } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TooltipModule } from 'primeng/tooltip';
+import { DialogModule } from 'primeng/dialog';
+import { TagModule } from 'primeng/tag';
 import { MessageService } from 'primeng/api';
 
+import { environment } from '../../../environments/environment';
 import { AlarmEventsService } from './services/alarm-events.service';
 import { AlarmEvent } from './models/alarm-event.model';
 
@@ -28,7 +31,7 @@ interface PageChange {
 @Component({
   selector: 'app-alarm-events',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, ButtonModule, PaginatorModule, SkeletonModule, TooltipModule],
+  imports: [DatePipe, ButtonModule, PaginatorModule, SkeletonModule, TooltipModule, DialogModule, TagModule],
   templateUrl: './alarm-events.html',
   styleUrl: './alarm-events.css',
 })
@@ -42,6 +45,9 @@ export class AlarmEvents implements OnInit {
   protected readonly limit = signal(10);
   protected readonly loading = signal(true);
   protected readonly errorMsg = signal<string | null>(null);
+
+  protected readonly previewVisible = signal(false);
+  protected readonly previewEvent = signal<AlarmEvent | null>(null);
 
   protected readonly first = computed(() => (this.page() - 1) * this.limit());
   protected readonly hasRows = computed(() => this.items().length > 0);
@@ -105,6 +111,26 @@ export class AlarmEvents implements OnInit {
         }),
       () => undefined,
     );
+  }
+
+  protected getCaptureUrl(event: AlarmEvent): string | null {
+    if (!event.captureImageUrl) {
+      return null;
+    }
+    // The backend serves static files at /uploads/*, build the full URL
+    const apiUrl = environment.apiBaseUrl;
+    const baseUrl = apiUrl.replace(/\/api\/v\d+$/, '');
+    return `${baseUrl}${event.captureImageUrl}`;
+  }
+
+  protected openPreview(event: AlarmEvent): void {
+    this.previewEvent.set(event);
+    this.previewVisible.set(true);
+  }
+
+  protected closePreview(): void {
+    this.previewVisible.set(false);
+    this.previewEvent.set(null);
   }
 
   private listError(err: HttpErrorResponse): string {
