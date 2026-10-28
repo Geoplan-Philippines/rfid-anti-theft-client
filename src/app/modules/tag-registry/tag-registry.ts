@@ -198,7 +198,7 @@ export class TagRegistry implements OnInit {
   protected onDelete(tag: KnownEpc): void {
     this.confirm.confirm({
       header: 'Delete tag',
-      message: `Stop monitoring ${groupEpc(tag.epc)}? This removes it from the watch list and can't be undone.`,
+      message: `Remove ${groupEpc(tag.epc)} from the sold list? The gate will alarm on it again, and this can't be undone.`,
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Delete tag',
       rejectLabel: 'Cancel',

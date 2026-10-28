@@ -6,33 +6,33 @@ product
 
 ## Users
 
-Facility staff at First Sumiden Circuits (security / operations). They work alongside
+Store operators at MUJI. They work alongside
 a **fixed RFID** installation: readers mounted at exits/gates that detect tagged items.
 Their context is a shift on-site, not a focused desk session, so they dip into the app
 to do a specific job and leave: register or correct a tag, or check why an alarm fired.
 
 The job to be done:
-- Maintain the registry of **known EPCs** (the tags the system watches). This is the
-  surface they touch most: create, edit, deactivate, search.
-- Understand alarm events. When a known EPC is picked up by a fixed reader, the hardware
-  sounds a physical alarm; staff use the app to see what tripped it and when.
+- Maintain the registry of **known EPCs** (sold tags). A tag on this list passes the gate.
+  Any other tag alarms. This is the surface they touch most: create, edit, deactivate, search.
+- Understand alarm events. When a tag that is not on the sold list passes a fixed reader,
+  the hardware sounds a physical alarm. Staff use the app to see what tripped it and when.
 - Review the **history of alarmed tags** to spot repeat offenders and patterns.
 
 ## Product Purpose
 
 A management client for a fixed-RFID anti-theft system. The hardware does the detection
-and the alarming; this app is the human side of it. It exists to keep the list of watched
-tags (known EPCs) accurate and to make alarm events legible after the fact.
+and the alarming; this app is the human side of it. It exists to keep the sold-tag list
+(known EPCs) accurate and to make alarm events legible after the fact.
 
-Scope for the First Sumiden pitch, deliberately small:
-1. **Known-EPC registry** — CRUD over watched tags (EPC, asset/label, status).
+Scope for MUJI EAS, deliberately small:
+1. **Known-EPC registry** — CRUD over sold tags (EPC, asset/label, status).
 2. **Alarm events** — what tripped, which reader, when; acknowledge / resolve.
 3. **Alarm history** — a table of past alarmed tags for review.
 
 No live floor-monitoring dashboard and no reader/zone configuration in this cut; keep it
 simple and complete rather than broad.
 
-Success = First Sumiden sees a tool that looks dependable and obviously usable by their
+Success = a MUJI store sees a tool that looks dependable and obviously usable by
 staff on day one, distinct from a stock PrimeNG sample.
 
 ## Brand Personality

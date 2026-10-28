@@ -1,6 +1,6 @@
 ---
 name: RFID Anti-Theft Console
-description: A calm, instrument-grade light UI for managing watched RFID tags and reviewing alarm events.
+description: A calm, instrument-grade light UI for the sold-tag list and alarm events.
 colors:
   cerulean: "oklch(0.55 0.14 233)"
   cerulean-deep: "oklch(0.47 0.14 233)"
@@ -130,7 +130,7 @@ The console borrows that posture. Surfaces are quiet white under a faint cool da
 canvas; structure is drawn with hairlines, not boxes-in-boxes; every tag EPC, reader ID,
 and timestamp is set in monospace so codes line up and read like measurements. One
 cerulean carries identity and intent. Alarm red is kept in a locked drawer and only comes
-out when a watched tag is actually detected.
+out when a tag that is not on the sold list is detected at a gate.
 
 The system explicitly rejects four things named in PRODUCT.md. It is **not a legacy ERP**
 (no dense gray forms, no toolbar thickets, no hierarchy-by-accident). It is **not a generic
@@ -169,9 +169,9 @@ The semantic set. Each appears as a tinted chip (wash background + ink text + a 
 as a saturated fill, except the alarm's loudest moment (an active-alarm banner or the alarm
 status fill), which earns Signal Red Deep with white text.
 - **Signal Red** (`oklch(0.55 0.20 27)`, ≈ `#cc2827`) / **Deep** (`oklch(0.50 0.21 27)`,
-  ≈ `#be000d`): a tagged item was detected by a fixed reader. The product's one loud color.
-- **OK Green** (`oklch(0.62 0.13 150)`, ≈ `#429c5a`): a tag is active and watched; system
-  nominal. Used as the chip dot and small indicators, never as a large fill.
+  ≈ `#be000d`): a tag that is not on the sold list was detected by a fixed reader. The product's one loud color.
+- **OK Green** (`oklch(0.62 0.13 150)`, ≈ `#429c5a`): a tag is on the sold list and the gate lets it pass.
+  Used as the chip dot and small indicators, never as a large fill.
 - **Amber** (`oklch(0.72 0.15 75)`, ≈ `#da950b`): acknowledged or pending review; an
   in-between state that needs attention but isn't a live alarm.
 
@@ -190,7 +190,7 @@ status fill), which earns Signal Red Deep with white text.
 
 ### Named Rules
 **The Locked-Drawer Rule.** Signal Red is forbidden as decoration. It appears only where a
-real watched tag has been detected: alarm rows, the active-alarm banner, the alarm status
+tag that is not on the sold list has been detected: alarm rows, the active-alarm banner, the alarm status
 chip and its count. If red is on screen, something is actually wrong. Its rarity is what
 makes a glance enough.
 
@@ -270,7 +270,7 @@ has both a shadow and a border at rest, the shadow is wrong.
 ### Status Chips
 - **Style:** wash background + matching ink text + a 6px leading dot, 4px radius, label type.
   Always paired with a text word and an icon, never color alone.
-- **Vocabulary:** Alarm (red wash), Active/Watched (green wash), Acknowledged (amber wash),
+- **Vocabulary:** Alarm (red wash), Sold (green wash), Acknowledged (amber wash),
   Resolved/Inactive (neutral Surface Sunken + Ink Muted dot).
 
 ### Cards / Panels
@@ -287,7 +287,7 @@ The registry and the event log are the product, so the table is the marquee comp
 - **Alarm row:** left cell carries the Alarm chip; the row keeps a Signal-Red-Wash tint so a
   live event is unmistakable while scanning, without shouting.
 - **Density + empty state:** comfortable by default; the empty state teaches the next action
-  ("No watched tags yet. Add an EPC to start monitoring."), never a bare "No data."
+  ("No sold tags yet. Add an EPC when it is sold."), never a bare "No data."
 
 ### Navigation
 - **Style:** left side-nav on Surface white, Label/Body type, icon + word. Default Ink Muted;

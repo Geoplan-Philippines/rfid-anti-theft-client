@@ -1,0 +1,164 @@
+<section class="page" aria-labelledby="page-title">
+  <header class="page__head">
+    <div class="page__heading">
+      <h1 id="page-title" class="page__title">Transactions</h1>
+      <p class="page__sub">Till sales. One row is one stop.</p>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="search">
+      <i class="pi pi-search search__icon" aria-hidden="true"></i>
+      <input
+        pInputText
+        class="search__input"
+        type="text"
+        [value]="searchTerm()"
+        (input)="onSearchInput($event)"
+        placeholder="EPC, store, or cashier"
+        aria-label="Search sales by EPC, store, or cashier"
+      />
+      @if (searchTerm()) {
+        <button type="button" class="search__clear" (click)="clearSearch()" aria-label="Clear search">
+          <i class="pi pi-times" aria-hidden="true"></i>
+        </button>
+      }
+    </div>
+    <label class="filter">
+      <span class="filter__label">Store</span>
+      <input
+        pInputText
+        class="u-mono"
+        type="text"
+        [value]="storeTerm()"
+        (input)="onStoreInput($event)"
+        placeholder="Code"
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </label>
+    <label class="filter">
+      <span class="filter__label">From</span>
+      <input pInputText class="u-mono" type="date" [value]="fromDate()" (change)="onFrom($event)" />
+    </label>
+    <label class="filter">
+      <span class="filter__label">To</span>
+      <input pInputText class="u-mono" type="date" [value]="toDate()" (change)="onTo($event)" />
+    </label>
+    <p class="toolbar__count" aria-live="polite">
+      @if (!loading() && !errorMsg()) {
+        @if (isFiltering()) {
+          {{ total() }} {{ total() === 1 ? 'match' : 'matches' }}
+        } @else {
+          {{ total() }} {{ total() === 1 ? 'sale' : 'sales' }}
+        }
+      }
+    </p>
+  </div>
+
+  <div class="panel">
+    @if (loading()) {
+      <div class="reg-scroll">
+        <table class="reg" aria-hidden="true">
+          <thead>
+            <tr>
+              <th scope="col" class="reg__col-date">Time</th>
+              <th scope="col">Store</th>
+              <th scope="col">Till</th>
+              <th scope="col">Cashier</th>
+              <th scope="col">Items</th>
+              <th scope="col">Id</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of skeletons(); track $index) {
+              <tr>
+                <td><p-skeleton width="9rem" height="0.9rem" /></td>
+                <td><p-skeleton width="4rem" height="0.9rem" /></td>
+                <td><p-skeleton width="5rem" height="0.9rem" /></td>
+                <td><p-skeleton width="6rem" height="0.9rem" /></td>
+                <td><p-skeleton width="2rem" height="0.9rem" /></td>
+                <td><p-skeleton width="5rem" height="0.9rem" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else if (errorMsg()) {
+      <div class="state state--error" role="alert">
+        <i class="pi pi-exclamation-triangle state__icon state__icon--alarm" aria-hidden="true"></i>
+        <p class="state__title">{{ errorMsg() }}</p>
+        <p-button label="Try again" icon="pi pi-refresh" severity="secondary" [outlined]="true" (onClick)="load()" />
+      </div>
+    } @else if (!hasRows()) {
+      @if (isFiltering()) {
+        <div class="state">
+          <i class="pi pi-search state__icon" aria-hidden="true"></i>
+          <p class="state__title">No sales match these filters</p>
+          <p class="state__hint">Try another store, date, or search.</p>
+          <p-button label="Clear filters" severity="secondary" [text]="true" (onClick)="clearFilters()" />
+        </div>
+      } @else {
+        <div class="state">
+          <i class="pi pi-inbox state__icon" aria-hidden="true"></i>
+          <p class="state__title">No sales yet</p>
+          <p class="state__hint">Sales show up here when a till sends a stop.</p>
+        </div>
+      }
+    } @else {
+      <div class="reg-scroll">
+        <table class="reg">
+          <caption class="sr-only">Till sales, newest first</caption>
+          <thead>
+            <tr>
+              <th scope="col" class="reg__col-date">Time</th>
+              <th scope="col">Store</th>
+              <th scope="col">Till</th>
+              <th scope="col">Cashier</th>
+              <th scope="col">Items</th>
+              <th scope="col">Id</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (sale of items(); track sale.id) {
+              <tr
+                class="reg__row"
+                tabindex="0"
+                (click)="openSale(sale.id)"
+                (keydown.enter)="openSale(sale.id)"
+                (keydown.space)="onRowKey($event, sale.id)"
+              >
+                <td class="u-mono reg__date">{{ sale.startedAt | date: 'MMM d, y · HH:mm' : 'Asia/Manila' }}</td>
+                <td class="u-mono">{{ sale.storeCode }}</td>
+                <td class="u-mono">{{ sale.deviceId }}</td>
+                <td>
+                  @if (sale.cashierName) {
+                    {{ sale.cashierName }}
+                  } @else {
+                    <span class="reg__none">None</span>
+                  }
+                </td>
+                <td class="u-mono">{{ sale.itemCount }}</td>
+                <td>
+                  <span class="u-mono" [attr.title]="sale.id" [attr.aria-label]="sale.id">{{ shortId(sale.id) }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="reg__foot">
+        <p-paginator
+          [first]="first()"
+          [rows]="limit()"
+          [totalRecords]="total()"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          (onPageChange)="onPage($event)"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="{first}–{last} of {totalRecords}"
+        />
+      </div>
+    }
+  </div>
+</section>

@@ -1,4 +1,4 @@
-/* Anti-Theft Console — global stylesheet.
+/* MUJI EAS. Global stylesheet.
    North Star: "The Instrument Panel." Tokens are canonical here; see DESIGN.md.
    Cascade order: PrimeNG sits between Tailwind's base (preflight) and utilities,
    so Tailwind utilities win over PrimeNG and PrimeNG wins over preflight. */

@@ -1,7 +1,7 @@
 import { PaginationQuery } from '../../../core/api/pagination.model';
 
 /**
- * A single alarm: a fixed reader scanned a watched EPC at a gate.
+ * A single alarm: a fixed reader scanned a tag that is not on the sold list.
  * Mirrors the backend `/alarms` row.
  */
 export interface AlarmEvent {

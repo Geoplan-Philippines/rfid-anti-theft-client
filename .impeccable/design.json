@@ -79,8 +79,8 @@
       "name": "Active Status Chip",
       "kind": "chip",
       "refersTo": "status-chip-active",
-      "description": "A watched tag in nominal state.",
-      "html": "<span class=\"ds-chip ds-chip-active\"><span class=\"ds-dot\"></span><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M20 6L9 17l-5-5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>Active</span>",
+      "description": "A sold tag. The gate lets it pass.",
+      "html": "<span class=\"ds-chip ds-chip-active\"><span class=\"ds-dot\"></span><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M20 6L9 17l-5-5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>Sold</span>",
       "css": ".ds-chip-active{background:#e4f8e7;color:#115629;}.ds-chip-active .ds-dot{background:#429c5a;}.ds-chip-active svg{width:13px;height:13px;}"
     },
     {
@@ -96,13 +96,13 @@
       "kind": "custom",
       "refersTo": "data-table",
       "description": "Marquee component: EPC/ID/time columns in mono, alarm row tinted.",
-      "html": "<table class=\"ds-table\"><thead><tr><th>EPC</th><th>Label</th><th>Status</th><th>Last seen</th></tr></thead><tbody><tr><td class=\"ds-mono\">E280 6894 0000 4012 AB</td><td>Reel cart #14</td><td><span class=\"ds-chip ds-chip-active\"><span class=\"ds-dot\"></span>Active</span></td><td class=\"ds-mono\">2026-06-10 08:42</td></tr><tr class=\"is-alarm\"><td class=\"ds-mono\">E280 6894 0000 4188 C2</td><td>Tool tray A</td><td><span class=\"ds-chip ds-chip-alarm\"><span class=\"ds-dot\"></span>Alarm</span></td><td class=\"ds-mono\">2026-06-10 09:15</td></tr></tbody></table>",
+      "html": "<table class=\"ds-table\"><thead><tr><th>EPC</th><th>Label</th><th>Status</th><th>Last seen</th></tr></thead><tbody><tr><td class=\"ds-mono\">E280 6894 0000 4012 AB</td><td>Reel cart #14</td><td><span class=\"ds-chip ds-chip-active\"><span class=\"ds-dot\"></span>Sold</span></td><td class=\"ds-mono\">2026-06-10 08:42</td></tr><tr class=\"is-alarm\"><td class=\"ds-mono\">E280 6894 0000 4188 C2</td><td>Tool tray A</td><td><span class=\"ds-chip ds-chip-alarm\"><span class=\"ds-dot\"></span>Alarm</span></td><td class=\"ds-mono\">2026-06-10 09:15</td></tr></tbody></table>",
       "css": ".ds-table{width:100%;border-collapse:collapse;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:0.875rem;color:#1d242a;}.ds-table th{text-align:left;font-size:0.75rem;font-weight:600;letter-spacing:0.01em;color:#0f1820;background:#f1f6f8;padding:8px 12px;border-bottom:1px solid #e1e6e9;}.ds-table td{padding:10px 12px;border-bottom:1px solid #e1e6e9;}.ds-table tbody tr:hover{background:#f1f6f8;}.ds-table .is-alarm{background:#fff4f1;}.ds-table .is-alarm:hover{background:#ffe8e4;}.ds-mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:0.8125rem;font-weight:500;font-variant-numeric:tabular-nums;color:#0f1820;}.ds-chip{display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;font-weight:500;padding:2px 8px;border-radius:4px;}.ds-dot{width:6px;height:6px;border-radius:999px;}.ds-chip-active{background:#e4f8e7;color:#115629;}.ds-chip-active .ds-dot{background:#429c5a;}.ds-chip-alarm{background:#ffe8e4;color:#9b1f1d;}.ds-chip-alarm .ds-dot{background:#cc2827;}"
     }
   ],
   "narrative": {
     "northStar": "The Instrument Panel",
-    "overview": "This is the read-out for a piece of equipment, not an app being sold. Surfaces are quiet white under a faint cool daylight canvas; structure is drawn with hairlines, not boxes-in-boxes; every EPC, reader ID, and timestamp is set in monospace so codes read like measurements. One cerulean carries identity and intent. Alarm red stays in a locked drawer and only appears when a watched tag is actually detected. The register is product: the design serves the task and then disappears.",
+    "overview": "This is the read-out for a piece of equipment, not an app being sold. Surfaces are quiet white under a faint cool daylight canvas; structure is drawn with hairlines, not boxes-in-boxes; every EPC, reader ID, and timestamp is set in monospace so codes read like measurements. One cerulean carries identity and intent. Alarm red stays in a locked drawer and only appears when a tag that is not on the sold list is detected at a gate. The register is product: the design serves the task and then disappears.",
     "keyCharacteristics": [
       "Light, pure-white surfaces on a faint cool canvas; depth from hairlines, not shadow.",
       "One cerulean for identity; alarm red rationed to genuine alarm states only.",
@@ -111,7 +111,7 @@
       "State is never color-only: color + icon + text, always."
     ],
     "rules": [
-      { "name": "The Locked-Drawer Rule", "body": "Signal Red is forbidden as decoration. It appears only where a real watched tag has been detected: alarm rows, the active-alarm banner, the alarm status chip and its count. If red is on screen, something is actually wrong.", "section": "colors" },
+      { "name": "The Locked-Drawer Rule", "body": "Signal Red is forbidden as decoration. It appears only where a tag that is not on the sold list has been detected: alarm rows, the active-alarm banner, the alarm status chip and its count. If red is on screen, something is actually wrong.", "section": "colors" },
       { "name": "The Whisper Tint Rule", "body": "Status is a wash-tinted chip with dark ink and a colored dot, not a saturated block. Saturated fills are reserved for the single most urgent affordance on a screen.", "section": "colors" },
       { "name": "The Machine-Value Rule", "body": "Anything the hardware produces (EPC, reader ID, timestamp, count) is set in IBM Plex Mono with tabular figures. Human language stays in Plex Sans.", "section": "typography" },
       { "name": "The Two-Step Rule", "body": "Hierarchy comes from at most two visible weights (400 and 600) plus scale. No light-weight body, no third typeface.", "section": "typography" },

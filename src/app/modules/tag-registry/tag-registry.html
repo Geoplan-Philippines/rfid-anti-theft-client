@@ -2,7 +2,7 @@
   <header class="page__head">
     <div class="page__heading">
       <h1 id="page-title" class="page__title">Tag Registry</h1>
-      <p class="page__sub">Watched EPCs the fixed readers raise an alarm on.</p>
+      <p class="page__sub">Sold tags. A tag on this list passes the gate. Any other tag alarms.</p>
     </div>
     <p-button label="Add tag" icon="pi pi-plus" (onClick)="openCreate()" />
   </header>
@@ -30,7 +30,7 @@
         @if (isSearching()) {
           {{ total() }} {{ total() === 1 ? 'match' : 'matches' }}
         } @else {
-          {{ total() }} watched {{ total() === 1 ? 'tag' : 'tags' }}
+          {{ total() }} sold {{ total() === 1 ? 'tag' : 'tags' }}
         }
       }
     </p>
@@ -79,9 +79,9 @@
       } @else {
         <div class="state">
           <i class="pi pi-inbox state__icon" aria-hidden="true"></i>
-          <p class="state__title">No watched tags yet</p>
+          <p class="state__title">No sold tags yet</p>
           <p class="state__hint">
-            Add an EPC to start monitoring it. The readers raise an alarm when a watched tag passes a gate.
+            Add an EPC when it is sold. A tag on this list passes the gate. Any other tag alarms.
           </p>
           <p-button label="Add tag" icon="pi pi-plus" (onClick)="openCreate()" />
         </div>
@@ -89,7 +89,7 @@
     } @else {
       <div class="reg-scroll">
         <table class="reg">
-          <caption class="sr-only">Watched tags, newest first</caption>
+          <caption class="sr-only">Sold tags, newest first</caption>
           <thead>
             <tr>
               <th scope="col" class="reg__col-epc">EPC</th>

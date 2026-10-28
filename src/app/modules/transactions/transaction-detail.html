@@ -1,0 +1,112 @@
+<section class="page" aria-labelledby="page-title">
+  <a class="back" routerLink="/transactions">
+    <i class="pi pi-arrow-left" aria-hidden="true"></i>
+    <span>Transactions</span>
+  </a>
+
+  <header class="page__head">
+    <div class="page__heading">
+      <h1 id="page-title" class="page__title">Sale</h1>
+      @if (sale(); as current) {
+        <p class="page__sub">
+          <span class="u-mono">{{ current.storeCode }}</span>
+          · till
+          <span class="u-mono">{{ current.deviceId }}</span>
+        </p>
+      }
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="panel panel--pad">
+      <p-skeleton width="16rem" height="0.9rem" />
+      <p-skeleton width="12rem" height="0.9rem" />
+      <p-skeleton width="100%" height="2.5rem" />
+    </div>
+  } @else if (errorMsg()) {
+    <div class="panel">
+      <div class="state state--error" role="alert">
+        <i class="pi pi-exclamation-triangle state__icon state__icon--alarm" aria-hidden="true"></i>
+        <p class="state__title">{{ errorMsg() }}</p>
+        <p-button label="Try again" icon="pi pi-refresh" severity="secondary" [outlined]="true" (onClick)="load()" />
+      </div>
+    </div>
+  } @else if (sale(); as current) {
+    <dl class="summary">
+      <div>
+        <dt>Time</dt>
+        <dd class="u-mono">{{ current.startedAt | date: 'MMM d, y · HH:mm' : 'Asia/Manila' }}</dd>
+      </div>
+      <div>
+        <dt>Store</dt>
+        <dd class="u-mono">{{ current.storeCode }}</dd>
+      </div>
+      <div>
+        <dt>Till</dt>
+        <dd class="u-mono">{{ current.deviceId }}</dd>
+      </div>
+      <div>
+        <dt>Cashier</dt>
+        <dd>
+          @if (current.cashierName) {
+            {{ current.cashierName }}
+          } @else {
+            <span class="muted">None</span>
+          }
+        </dd>
+      </div>
+      <div>
+        <dt>Items</dt>
+        <dd class="u-mono">{{ current.itemCount }}</dd>
+      </div>
+      <div>
+        <dt>Id</dt>
+        <dd class="u-mono summary__id">{{ current.id }}</dd>
+      </div>
+    </dl>
+
+    <div class="panel">
+      @if (current.tags.length === 0) {
+        <div class="state">
+          <i class="pi pi-inbox state__icon" aria-hidden="true"></i>
+          <p class="state__title">No tags on this sale</p>
+          <p class="state__hint">Nothing was stored for this sale.</p>
+        </div>
+      } @else {
+        <div class="reg-scroll">
+          <table class="reg">
+            <caption class="sr-only">Tags in this sale</caption>
+            <thead>
+              <tr>
+                <th scope="col">EPC</th>
+                <th scope="col" class="reg__col-date">Scanned</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (tag of current.tags; track $index) {
+                <tr>
+                  <td>
+                    <div class="reg__epc">
+                      <span class="u-mono reg__epc-value">{{ tag.epc }}</span>
+                      <button
+                        type="button"
+                        class="iconbtn iconbtn--ghost"
+                        (click)="copyEpc(tag.epc)"
+                        pTooltip="Copy EPC"
+                        tooltipPosition="top"
+                        [attr.aria-label]="'Copy EPC ' + tag.epc"
+                      >
+                        <i class="pi pi-copy" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td class="u-mono reg__date">{{ tag.scannedAt | date: 'MMM d, y · HH:mm' : 'Asia/Manila' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+</section>

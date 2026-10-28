@@ -11,13 +11,14 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 import { routes } from './app.routes';
 import { AppPreset } from './core/theme/app-preset';
 import { unwrapApiInterceptor } from './core/api/unwrap-api.interceptor';
+import { authInterceptor } from './core/auth/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'enabled' })),
-    provideHttpClient(withFetch(), withInterceptors([unwrapApiInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor, unwrapApiInterceptor])),
     providePrimeNG({
       theme: {
         preset: AppPreset,

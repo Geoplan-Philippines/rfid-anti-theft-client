@@ -2,7 +2,7 @@ import { PaginationQuery } from '../../../core/api/pagination.model';
 
 export type { PaginatedResponse, PaginationMeta } from '../../../core/api/pagination.model';
 
-/** A watched RFID tag. Mirrors the backend `KnownEpc` model (Prisma). */
+/** A sold RFID tag. A tag on this list passes the gate. Any other tag alarms. */
 export interface KnownEpc {
   id: string;
   epc: string;

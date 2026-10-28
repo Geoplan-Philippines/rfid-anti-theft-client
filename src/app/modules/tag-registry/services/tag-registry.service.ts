@@ -11,7 +11,7 @@ import {
   SaveEpcInput,
 } from '../models/tag-registry.model';
 
-/** CRUD client for watched EPCs (`/anti-theft/epcs`). */
+/** CRUD client for sold EPCs (`/anti-theft/epcs`). */
 @Injectable({ providedIn: 'root' })
 export class TagRegistryService {
   private readonly http = inject(HttpClient);

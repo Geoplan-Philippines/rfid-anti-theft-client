@@ -2,7 +2,7 @@
   <header class="page__head">
     <div class="page__heading">
       <h1 id="page-title" class="page__title">Alarm Events</h1>
-      <p class="page__sub">Reads of watched tags at the fixed gate readers, newest first.</p>
+      <p class="page__sub">Tags that were not on the sold list when they passed a gate, newest first.</p>
     </div>
     <p-button
       label="Refresh"
@@ -61,7 +61,7 @@
         <i class="pi pi-shield state__icon" aria-hidden="true"></i>
         <p class="state__title">No alarm events yet</p>
         <p class="state__hint">
-          When a watched tag passes a gate reader, the alarm is logged here.
+          When a tag that is not on the sold list passes a gate, the alarm is logged here.
         </p>
       </div>
     } @else {

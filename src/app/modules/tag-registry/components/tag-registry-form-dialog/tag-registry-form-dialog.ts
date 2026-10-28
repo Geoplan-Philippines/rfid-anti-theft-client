@@ -65,7 +65,7 @@ export class TagRegistryFormDialog {
     return normalized && /^[0-9A-F]+$/.test(normalized) ? groupEpc(normalized) : '';
   });
   protected readonly title = computed(() =>
-    this.mode() === 'create' ? 'Add watched tag' : 'Edit tag',
+    this.mode() === 'create' ? 'Add sold tag' : 'Edit tag',
   );
   protected readonly submitLabel = computed(() =>
     this.mode() === 'create' ? 'Add tag' : 'Save changes',
