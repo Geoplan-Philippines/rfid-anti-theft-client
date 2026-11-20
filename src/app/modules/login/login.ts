@@ -3,15 +3,18 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
 
 import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-login',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, MessageModule],
   templateUrl: './login.html',
-  styleUrl: './login.css',
+  host: { class: 'block w-full max-w-md' },
 })
 export class Login {
   private readonly auth = inject(AuthService);

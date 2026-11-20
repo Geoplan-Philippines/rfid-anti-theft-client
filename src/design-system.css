@@ -1,0 +1,190 @@
+/* Design system: global rules for list pages, ported from Meedo.
+   Tokens live in styles.css; PrimeNG component tokens live in app-preset.ts.
+   This file only covers what tokens cannot express (stickiness, bleed,
+   density, table header type). Every rule is opt-in through a ds-* class
+   or the app-page host. It sits in the `components` layer: above PrimeNG,
+   below Tailwind utilities. */
+@layer components {
+  /* ─── Lists (PrimeNG Table) ───────────────────────────────────────────
+     Add class="ds-table" to a p-table inside <app-page>. Rows run edge to
+     edge of the content area with hairline dividers; text lines up with the
+     page title through the gutter padding on the outer cells. */
+  .ds-table {
+    margin-inline: calc(var(--page-gutter) * -1);
+  }
+
+  /* PrimeNG gives the table container an inline `overflow: auto`, which would
+     trap the sticky header inside the table (pushed down by the header offset,
+     over the first row). Sideways scrolling belongs to .ds-table-scroll, so the
+     container stays unclipped and the header sticks under the app header. */
+  .ds-table .p-datatable-table-container {
+    overflow: visible !important;
+  }
+
+  /* PrimeNG makes the thead sticky, which is its own stacking context; lift
+     it above positioned row content (buttons) that scrolls underneath. */
+  .ds-table .p-datatable-thead {
+    z-index: 2;
+  }
+
+  .ds-table .p-datatable-thead > tr > th {
+    position: sticky;
+    top: var(--app-header-h);
+    z-index: 1;
+    height: var(--row-h-head);
+    border-top: 1px solid var(--divider);
+    font-size: 0.75rem;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    text-transform: none;
+  }
+
+  .ds-table .p-datatable-tbody > tr > td {
+    height: var(--row-h);
+    font-size: 0.875rem;
+    vertical-align: middle;
+  }
+
+  .ds-table .p-datatable-thead > tr > th:first-child,
+  .ds-table .p-datatable-tbody > tr > td:first-child {
+    padding-left: var(--page-gutter);
+  }
+
+  .ds-table .p-datatable-thead > tr > th:last-child,
+  .ds-table .p-datatable-tbody > tr > td:last-child {
+    padding-right: var(--page-gutter);
+  }
+
+  /* The list footer draws the closing rule, so the last row does not. */
+  .ds-table .p-datatable-tbody > tr:last-child > td {
+    border-bottom-color: transparent;
+  }
+
+  .ds-table .p-datatable-tbody > tr.ds-row-link {
+    cursor: pointer;
+  }
+
+  /* Wide tables scroll sideways on small screens. The wrapper takes over the
+     bleed, and the sticky header only applies where the wrapper is not a
+     scroll container. */
+  .ds-table-scroll {
+    margin-inline: calc(var(--page-gutter) * -1);
+    overflow-x: auto;
+  }
+  .ds-table-scroll > .ds-table { margin-inline: 0; }
+
+  /* While the wrapper scrolls, it is the header's scroll container: stick to its top. */
+  @media (max-width: 1279.98px) {
+    .ds-table-scroll .ds-table .p-datatable-thead > tr > th { top: 0; }
+  }
+
+  @media (min-width: 1280px) {
+    .ds-table-scroll { overflow-x: visible; }
+  }
+
+  /* ─── Toolbar controls ────────────────────────────────────────────────
+     Every control in a page toolbar is the same height. */
+  .page-toolbar .p-inputtext,
+  .page-toolbar .p-select,
+  .page-toolbar .p-datepicker-input,
+  .page-toolbar .p-button:not(.p-button-icon-only) {
+    min-height: var(--control-h);
+  }
+  .page-toolbar .p-select-label {
+    padding-block: 0.375rem;
+  }
+
+  /* Page chrome text is 14px: toolbar controls and the header actions. */
+  .page-toolbar :is(.p-button, .p-inputtext, .p-select-label, .p-datepicker-input),
+  .page-actions :is(.p-button, .p-inputtext, .p-select-label, .p-datepicker-input) {
+    font-size: 0.875rem;
+  }
+  .page-toolbar .p-button .pi,
+  .page-actions .p-button .pi {
+    font-size: 0.875rem;
+  }
+
+  /* Search field: PrimeNG IconField + InputText. */
+  .page-toolbar .ds-search {
+    flex: 0 1 20rem;
+    min-width: 12rem;
+  }
+  .page-toolbar .ds-search .p-inputtext { width: 100%; }
+
+  /* Clear button at the end of a search field: a small PrimeNG text button
+     centred in the input instead of an icon-sized glyph. */
+  .ds-search .ds-search-clear {
+    margin-top: 0;
+    transform: translateY(-50%);
+    inset-inline-end: 0.25rem;
+  }
+  .ds-search .ds-search-clear .p-button {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  @media (max-width: 767.98px) {
+    .page-toolbar .ds-search { flex: 1 1 100%; }
+  }
+
+  /* Result count at the end of a page toolbar. */
+  .ds-toolbar-count {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Loading placeholder shaped like list rows. */
+  .ds-table-skeleton {
+    margin-inline: calc(var(--page-gutter) * -1);
+    border-top: 1px solid var(--divider);
+  }
+  .ds-table-skeleton .skeleton-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: var(--row-h);
+    padding: 0 var(--page-gutter);
+    border-bottom: 1px solid var(--divider);
+  }
+
+  /* Small section header inside a page (e.g. "Tags" under a sale). */
+  .ds-section-title {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-heading);
+  }
+
+  /* PrimeNG Message used as an inline banner above a list: full-width text,
+     any action (Try again) pushed to the end. Colours come from the preset. */
+  .ds-message .p-message-content {
+    width: 100%;
+    font-size: 0.875rem;
+  }
+  .ds-message .p-message-text {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  /* ─── Small shared bits ─────────────────────────────────────────────── */
+  .ds-muted { color: var(--text-muted); }
+  .ds-num { font-variant-numeric: tabular-nums; }
+
+  /* Visually hidden text for screen readers. */
+  .ds-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

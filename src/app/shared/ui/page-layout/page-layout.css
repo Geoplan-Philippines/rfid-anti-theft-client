@@ -1,0 +1,119 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  min-width: 0;
+  padding: 1.5rem var(--page-gutter) 0;
+  background: var(--page);
+  color: var(--text-body);
+}
+
+.page-breadcrumb {
+  margin-bottom: 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.page-head-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 1.375rem;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-heading);
+}
+
+.page-subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--toolbar-gap);
+}
+
+/* Key facts between the title and the list. */
+.page-summary {
+  margin-bottom: 1.25rem;
+}
+
+/* PrimeNG Toolbar: colours, padding and gap come from the preset (app-preset.ts). */
+.page-toolbar {
+  display: flex;
+}
+
+.page-toolbar ::ng-deep .p-toolbar-start,
+.page-toolbar ::ng-deep .p-toolbar-end {
+  flex-wrap: wrap;
+  gap: var(--toolbar-gap);
+  min-width: 0;
+}
+
+.page-toolbar ::ng-deep .p-toolbar-start {
+  flex: 1 1 auto;
+}
+
+/* The end group stays right-aligned even when the start group is empty. */
+.page-toolbar ::ng-deep .p-toolbar-end {
+  margin-inline-start: auto;
+}
+
+.page-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: var(--page-gap);
+  min-width: 0;
+  padding-bottom: 2rem;
+}
+
+/* Collapse slots nothing was projected into. */
+.page-breadcrumb:empty,
+.page-actions:empty,
+.page-summary:empty {
+  display: none;
+}
+
+.page-toolbar ::ng-deep .p-toolbar-start:empty,
+.page-toolbar ::ng-deep .p-toolbar-end:empty {
+  display: none;
+}
+
+:host ::ng-deep .page-toolbar:not(:has(.p-toolbar-start:not(:empty))):not(:has(.p-toolbar-end:not(:empty))) {
+  display: none;
+}
+
+@media (max-width: 767.98px) {
+  :host {
+    padding-top: 1rem;
+  }
+
+  .page-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+}

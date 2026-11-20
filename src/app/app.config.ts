@@ -6,7 +6,7 @@ import {
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { providePrimeNG } from 'primeng/config';
-import { MessageService, ConfirmationService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 
 import { routes } from './app.routes';
 import { AppPreset } from './core/theme/app-preset';
@@ -32,6 +32,5 @@ export const appConfig: ApplicationConfig = {
       ripple: false,
     }),
     MessageService,
-    ConfirmationService,
   ],
 };

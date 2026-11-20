@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -6,10 +6,15 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { EMPTY, Subject, catchError, switchMap, tap } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
+import { MessageModule } from 'primeng/message';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 
+import { PageLayout } from '../../shared/ui/page-layout/page-layout';
+import { EmptyState } from '../../shared/ui/empty-state/empty-state';
 import { groupEpc } from '../tag-registry/models/tag-registry.model';
 import { TransactionsService } from './services/transactions.service';
 import { TransactionDetail as SaleDetail } from './models/transaction.model';
@@ -17,9 +22,19 @@ import { TransactionDetail as SaleDetail } from './models/transaction.model';
 @Component({
   selector: 'app-transaction-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, RouterLink, ButtonModule, SkeletonModule, TooltipModule],
+  imports: [
+    DatePipe,
+    RouterLink,
+    PageLayout,
+    EmptyState,
+    ButtonModule,
+    MessageModule,
+    SkeletonModule,
+    TableModule,
+    TagModule,
+    TooltipModule,
+  ],
   templateUrl: './transaction-detail.html',
-  styleUrl: './transaction-detail.css',
 })
 export class TransactionDetail implements OnInit {
   private readonly service = inject(TransactionsService);
@@ -29,6 +44,10 @@ export class TransactionDetail implements OnInit {
   protected readonly sale = signal<SaleDetail | null>(null);
   protected readonly loading = signal(true);
   protected readonly errorMsg = signal<string | null>(null);
+  protected readonly subtitle = computed(() => {
+    const sale = this.sale();
+    return sale ? `${sale.storeCode} · ${sale.deviceId}` : null;
+  });
 
   private readonly saleId = signal('');
   private readonly reload$ = new Subject<void>();

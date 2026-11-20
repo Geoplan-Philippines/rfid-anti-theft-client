@@ -1,133 +1,192 @@
-/* MUJI EAS. Global stylesheet.
-   North Star: "The Instrument Panel." Tokens are canonical here; see DESIGN.md.
-   Cascade order: PrimeNG sits between Tailwind's base (preflight) and utilities,
-   so Tailwind utilities win over PrimeNG and PrimeNG wins over preflight. */
-@layer theme, base, primeng, components, utilities, app;
+/* MUJI EAS global stylesheet.
+   The visual system is Meedo's (Geoplan-Philippines/meedo-client, staging):
+   the same colour tokens, type, spacing and radius. Light theme only.
+
+   Source of truth:
+   - this file: CSS variables + the Tailwind `@theme` mapping + base type;
+   - src/design-system.css: list-page rules tokens cannot express;
+   - src/app/core/theme/app-preset.ts: PrimeNG component tokens.
+
+   Cascade: PrimeNG sits in its own layer between Tailwind's base (preflight)
+   and components, so design-system rules and Tailwind utilities win over it. */
+@layer theme, base, primeng, components, utilities;
 
 @import 'tailwindcss';
 @import 'primeicons/primeicons.css';
+@import './design-system.css';
 
 :root {
-  /* Brand */
-  --color-primary: oklch(0.55 0.14 233);
-  --color-primary-strong: oklch(0.47 0.14 233);
-  --color-primary-hover: oklch(0.42 0.14 233);
-  --color-primary-wash: oklch(0.95 0.03 233);
-  --color-on-color: oklch(1 0 0);
+  color-scheme: light;
 
-  /* Neutrals (cool, hue 233) */
-  --color-canvas: oklch(0.985 0.005 233);
-  --color-surface: oklch(1 0 0);
-  --color-surface-sunken: oklch(0.97 0.006 233);
-  --color-hairline: oklch(0.922 0.006 233);
-  --color-hairline-strong: oklch(0.86 0.008 233);
-  --color-ink: oklch(0.255 0.015 245);
-  --color-ink-strong: oklch(0.205 0.02 245);
-  --color-ink-muted: oklch(0.50 0.015 245);
+  /* Surface ramp: canvas -> surface -> popover. Depth comes from this ramp
+     plus 1px borders, never from resting shadows on content. */
+  --background: #F1F6FC;   /* canvas: sign-in page and app body */
+  --surface: #FFFFFF;      /* cards, panels, inputs */
+  --popover: #FFFFFF;      /* dropdowns, dialogs (lifted by shadow) */
+  --foreground: #0B161F;
+  --text-heading: #0B161F;
+  --text-body: #365261;
+  --text-muted: #5E7180;   /* timestamps, placeholders, secondary labels (AA on canvas + surface) */
 
-  /* Signal */
-  --color-danger: oklch(0.55 0.20 27);
-  --color-danger-strong: oklch(0.50 0.21 27);
-  --color-danger-wash: oklch(0.955 0.035 27);
-  --color-danger-ink: oklch(0.45 0.16 27);
-  --color-ok: oklch(0.62 0.13 150);
-  --color-ok-wash: oklch(0.96 0.03 150);
-  --color-ok-ink: oklch(0.40 0.10 150);
-  --color-amber: oklch(0.72 0.15 75);
-  --color-amber-wash: oklch(0.96 0.05 75);
-  --color-amber-ink: oklch(0.45 0.09 75);
+  --primary: #0B4EA2;
+  --primary-hover: #03285A;
+  --primary-foreground: #FFFFFF;
+  --secondary: #E8F1FF;
+  --secondary-foreground: #0B4EA2;
+  --accent: #22D3EE;
+  --accent-foreground: #083344;
 
-  /* Type */
-  --font-sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+  --border: #DBE5F0;
+  --border-strong: #C7D6E6;  /* inputs, popover edges, emphasized dividers */
+  --input: #DBE5F0;
+  /* Focus ring. Cyan-700 rather than the cyan accent so the 2px ring keeps 3:1+ on the white page. */
+  --ring: #0E7490;
 
-  /* Radius */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
-  --radius-pill: 999px;
+  /* List surfaces. Lists sit directly on --page; the app chrome (header +
+     sidebar) is one quiet step darker. */
+  --page: #FFFFFF;          /* content canvas behind every list page */
+  --chrome: #F6F8FB;        /* header + sidebar */
+  --raised: #FFFFFF;        /* small lifted items on the page */
+  --subtle: #F3F6FA;        /* quiet fills: segmented control track, skeletons */
+  --hover: #F2F5F9;         /* row + nav hover */
+  --selected: #E9F0FA;      /* selected row, active nav item, current page */
+  --divider: #E6ECF2;       /* row dividers and section rules, lighter than --border */
+  --text-faint: #8696A5;    /* icons and decorative glyphs only, never running text */
 
-  /* Elevation (overlays only) */
-  --shadow-overlay: 0 6px 24px -8px oklch(0.255 0.03 245 / 0.18);
-  --shadow-dialog: 0 16px 48px -12px oklch(0.255 0.03 245 / 0.28);
+  /* Status: solid + muted fill + muted-foreground. The muted pairs are the
+     badge, banner and toast colours; every foreground meets WCAG AA on its
+     fill. The solid tones are for dots and borders only, never text. */
+  --destructive: #FF4B4B;
+  --muted-destructive: #FFE1DE;
+  --muted-destructive-foreground: #C0322F;
+  --success: #3DBE81;
+  --muted-success: #D1EDE0;
+  --muted-success-foreground: #1B6B47;
+  --warning: #E8A317;
+  --muted-warning: #FEF3D6;
+  --muted-warning-foreground: #92580B;
+  --info: #2F6FE0;            /* status-only blue, never used for actions */
+  --muted-info: #DCE9FB;
+  --muted-info-foreground: #1A4F9C;
+  --success-foreground: #FFFFFF;
 
-  /* Motion */
-  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
-  --dur-fast: 120ms;
-  --dur-base: 180ms;
-  --dur-overlay: 220ms;
+  /* Neutral badge (inactive, logged, no data): 7.9:1, WCAG AA. */
+  --badge-neutral-bg: #E6ECF2;
+  --badge-neutral-fg: #33495A;
 
-  /* Z-index scale */
-  --z-sticky: 100;
-  --z-overlay: 1000;
-  --z-modal: 1100;
-  --z-toast: 1200;
+  --radius: 0.25rem;
+  --card-radius: 0.375rem;   /* stat tiles, popovers, thumbnails */
+  --pill-radius: 999px;      /* badges, counts, avatars */
+
+  /* Layout spacing. Values are steps of Tailwind's 4px scale, named by role. */
+  --page-gutter: 2rem;       /* tw 8: page side padding on desktop */
+  --page-gutter-sm: 1rem;    /* tw 4: page side padding on phones */
+  --page-gap: 1.25rem;       /* tw 5: header -> toolbar -> content */
+  --toolbar-gap: 0.5rem;     /* tw 2: between toolbar controls */
+  --cell-x: 0.75rem;         /* tw 3: table cell side padding */
+  --app-header-h: 3.5rem;    /* tw 14: sticky app header; sticky table headers sit under it */
+
+  /* Density. One row height everywhere a list renders. */
+  --row-h: 2.75rem;          /* 44px list row */
+  --row-h-head: 2.25rem;     /* 36px header row */
+  --control-h: 2.25rem;      /* 36px toolbar controls (inputs, buttons, selects) */
+
+  /* Interaction. */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --transition-fast: 120ms ease;
+}
+
+/* Phones get a tighter gutter. Everything that bleeds reads this one value.
+   Kept unlayered next to the tokens so it can override them. */
+@media (max-width: 767.98px) {
+  :root { --page-gutter: var(--page-gutter-sm); }
+}
+
+/* `inline` makes utilities reference the source variable directly
+   (e.g. bg-background -> var(--background)). */
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-popover: var(--popover);
+  --color-foreground: var(--foreground);
+  --color-heading: var(--text-heading);
+  --color-body: var(--text-body);
+  --color-muted: var(--text-muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-destructive: var(--destructive);
+  --color-muted-destructive: var(--muted-destructive);
+  --color-muted-destructive-foreground: var(--muted-destructive-foreground);
+  --color-success: var(--success);
+  --color-muted-success: var(--muted-success);
+  --color-muted-success-foreground: var(--muted-success-foreground);
+  --color-warning: var(--warning);
+  --color-muted-warning: var(--muted-warning);
+  --color-muted-warning-foreground: var(--muted-warning-foreground);
+  --color-info: var(--info);
+  --color-muted-info: var(--muted-info);
+  --color-muted-info-foreground: var(--muted-info-foreground);
+  --color-badge-neutral: var(--badge-neutral-bg);
+  --color-badge-neutral-foreground: var(--badge-neutral-fg);
+
+  --color-page: var(--page);
+  --color-chrome: var(--chrome);
+  --color-raised: var(--raised);
+  --color-subtle: var(--subtle);
+  --color-hover: var(--hover);
+  --color-selected: var(--selected);
+  --color-divider: var(--divider);
+  --color-faint: var(--text-faint);
+
+  --radius-base: var(--radius);
+  --radius-card: var(--card-radius);
+  --radius-pill: var(--pill-radius);
+
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Work Sans', sans-serif;
 }
 
 @layer base {
-  html {
-    color-scheme: light;
-    -webkit-text-size-adjust: 100%;
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
     margin: 0;
     min-height: 100dvh;
-    background: var(--color-canvas);
-    color: var(--color-ink);
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: 'cv05' 1;
+    font-family: var(--font-body);
+    background: var(--color-background);
+    color: var(--text-body);
   }
 
-  h1, h2, h3, h4 {
-    color: var(--color-ink-strong);
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
     font-weight: 600;
-    letter-spacing: -0.01em;
-    text-wrap: balance;
-    margin: 0;
   }
 
-  ::selection {
-    background: var(--color-primary-wash);
-    color: var(--color-primary-strong);
+  button, input, textarea, select {
+    font-family: var(--font-body);
   }
 
-  /* One focus treatment everywhere: a 2px cerulean ring at an offset. */
+  /* Elements PrimeNG does not draw get the same ring as PrimeNG controls
+     (2px --ring at a 2px offset). PrimeNG's own focus rules win over this. */
   :focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
-    border-radius: var(--radius-sm);
-  }
-}
-
-@layer app {
-  /* Every machine value (EPC, reader, timestamp, count) is monospace + tabular. */
-  .u-mono {
-    font-family: var(--font-mono);
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: 'zero' 1;
-    letter-spacing: 0;
-  }
-
-  .u-tnum {
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* Quiet, narrow scrollbars so dense tables don't get a chrome-heavy gutter. */
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-hairline-strong) transparent;
-  }
-  *::-webkit-scrollbar { width: 10px; height: 10px; }
-  *::-webkit-scrollbar-thumb {
-    background: var(--color-hairline-strong);
-    border: 3px solid transparent;
-    background-clip: content-box;
-    border-radius: var(--radius-pill);
+    outline: var(--focus-ring-width) solid var(--ring);
+    outline-offset: var(--focus-ring-offset);
   }
 }
 

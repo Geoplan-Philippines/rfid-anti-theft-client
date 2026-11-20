@@ -1,0 +1,16 @@
+<div class="page-breadcrumb"><ng-content select="[pageBreadcrumb]" /></div>
+<header class="page-head">
+  <div class="page-head-text">
+    <h1 class="page-title">{{ heading() }}</h1>
+    @if (subtitle()) {
+      <p class="page-subtitle">{{ subtitle() }}</p>
+    }
+  </div>
+  <div class="page-actions"><ng-content select="[pageActions]" /></div>
+</header>
+<div class="page-summary"><ng-content select="[pageSummary]" /></div>
+<p-toolbar class="page-toolbar">
+  <ng-template #start><ng-content select="[pageToolbar]" /></ng-template>
+  <ng-template #end><ng-content select="[pageToolbarEnd]" /></ng-template>
+</p-toolbar>
+<div class="page-body"><ng-content /></div>

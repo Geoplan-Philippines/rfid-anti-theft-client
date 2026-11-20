@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.app-header {
+  min-width: 0;
+}
+
+.header-actions {
+  max-width: 65vw;
+}
+
+:host ::ng-deep .header-icon-btn .p-button {
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+}
+
+@media (max-width: 420px) {
+  .header-actions {
+    gap: 0.125rem;
+    max-width: 58vw;
+  }
+
+  :host ::ng-deep .header-icon-btn .p-button {
+    width: 2rem;
+    height: 2rem;
+  }
+}

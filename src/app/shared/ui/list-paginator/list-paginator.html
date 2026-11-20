@@ -1,0 +1,18 @@
+@if (total() > 0) {
+  <nav class="list-footer" [attr.aria-label]="'Pages of ' + itemLabel()">
+    <p class="list-footer-summary" aria-live="polite">
+      Showing {{ rangeStart() }} to {{ rangeEnd() }} of {{ total() }} {{ itemLabel() }}
+    </p>
+    <p-paginator
+      [first]="first()"
+      [rows]="pageSize()"
+      [totalRecords]="total()"
+      [rowsPerPageOptions]="rowsPerPage()"
+      [pageLinkSize]="5"
+      [showFirstLastIcon]="false"
+      [alwaysShow]="false"
+      dropdownAppendTo="body"
+      (onPageChange)="onPageChange($event)"
+    />
+  </nav>
+}

@@ -13,21 +13,24 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, Subject, catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
-import { PaginatorModule } from 'primeng/paginator';
+import { DialogModule } from 'primeng/dialog';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { MessageService, ConfirmationService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
+
+import { PageLayout } from '../../shared/ui/page-layout/page-layout';
+import { ListPageChange, ListPaginator } from '../../shared/ui/list-paginator/list-paginator';
+import { EmptyState } from '../../shared/ui/empty-state/empty-state';
 
 import { TagRegistryService } from './services/tag-registry.service';
 import { TagRegistryFormDialog } from './components/tag-registry-form-dialog/tag-registry-form-dialog';
 import { EpcFormatPipe } from './pipes/epc-format.pipe';
 import { KnownEpc, SaveEpcInput, groupEpc } from './models/tag-registry.model';
-
-interface PageChange {
-  first?: number;
-  rows?: number;
-}
 
 @Component({
   selector: 'app-tag-registry',
@@ -36,19 +39,24 @@ interface PageChange {
     DatePipe,
     EpcFormatPipe,
     TagRegistryFormDialog,
+    PageLayout,
+    ListPaginator,
+    EmptyState,
     ButtonModule,
-    PaginatorModule,
+    DialogModule,
+    IconFieldModule,
+    InputIconModule,
     InputTextModule,
+    MessageModule,
     SkeletonModule,
+    TableModule,
     TooltipModule,
   ],
   templateUrl: './tag-registry.html',
-  styleUrl: './tag-registry.css',
 })
 export class TagRegistry implements OnInit {
   private readonly service = inject(TagRegistryService);
   private readonly messages = inject(MessageService);
-  private readonly confirm = inject(ConfirmationService);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly items = signal<KnownEpc[]>([]);
@@ -65,8 +73,9 @@ export class TagRegistry implements OnInit {
   protected readonly editingTag = signal<KnownEpc | null>(null);
   protected readonly submitting = signal(false);
   protected readonly formError = signal<string | null>(null);
+  /** The tag awaiting delete confirmation; the confirm dialog is open while set. */
+  protected readonly tagToDelete = signal<KnownEpc | null>(null);
 
-  protected readonly first = computed(() => (this.page() - 1) * this.limit());
   protected readonly isSearching = computed(() => this.activeSearch().length > 0);
   protected readonly hasRows = computed(() => this.items().length > 0);
   protected readonly skeletons = computed(() => Array.from({ length: this.limit() }));
@@ -135,10 +144,9 @@ export class TagRegistry implements OnInit {
     this.load();
   }
 
-  protected onPage(event: PageChange): void {
-    const rows = event.rows ?? this.limit();
-    this.limit.set(rows);
-    this.page.set(Math.floor((event.first ?? 0) / rows) + 1);
+  protected onPage(event: ListPageChange): void {
+    this.limit.set(event.pageSize);
+    this.page.set(event.page);
     this.load();
   }
 
@@ -196,16 +204,19 @@ export class TagRegistry implements OnInit {
   }
 
   protected onDelete(tag: KnownEpc): void {
-    this.confirm.confirm({
-      header: 'Delete tag',
-      message: `Remove ${groupEpc(tag.epc)} from the sold list? The gate will alarm on it again, and this can't be undone.`,
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Delete tag',
-      rejectLabel: 'Cancel',
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectButtonStyleClass: 'p-button-text p-button-secondary',
-      accept: () => this.performDelete(tag),
-    });
+    this.tagToDelete.set(tag);
+  }
+
+  protected cancelDelete(): void {
+    this.tagToDelete.set(null);
+  }
+
+  protected confirmDelete(): void {
+    const tag = this.tagToDelete();
+    this.tagToDelete.set(null);
+    if (tag) {
+      this.performDelete(tag);
+    }
   }
 
   protected copyEpc(epc: string): void {

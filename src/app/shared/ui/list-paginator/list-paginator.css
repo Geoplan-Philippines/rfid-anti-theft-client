@@ -1,0 +1,57 @@
+:host {
+  display: block;
+  /* Stays in view at the bottom of long lists, and sits right under short ones. */
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+}
+
+.list-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  min-height: 3rem;
+  margin-inline: calc(var(--page-gutter) * -1);
+  padding: 0.5rem var(--page-gutter);
+  border-top: 1px solid var(--divider);
+  background: var(--page);
+}
+
+.list-footer-summary {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+:host ::ng-deep .p-paginator {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+:host ::ng-deep .p-paginator-page,
+:host ::ng-deep .p-paginator-prev,
+:host ::ng-deep .p-paginator-next {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rows-per-page select: compact, matches the 2rem page buttons. */
+:host ::ng-deep .p-paginator-rpp-dropdown {
+  margin-inline-start: 0.5rem;
+  font-size: 0.8125rem;
+}
+
+:host ::ng-deep .p-paginator-rpp-dropdown .p-select-label {
+  padding-block: 0.25rem;
+  font-size: 0.8125rem;
+}
+
+@media (max-width: 767.98px) {
+  .list-footer {
+    justify-content: center;
+  }
+}

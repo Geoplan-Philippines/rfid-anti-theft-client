@@ -1,0 +1,148 @@
+<p-dialog
+  [visible]="open()"
+  (visibleChange)="onVisibleChange($event)"
+  [header]="title()"
+  closeAriaLabel="Close"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="!submitting()"
+  [dismissableMask]="!submitting()"
+  [style]="{ width: '440px', maxWidth: 'calc(100vw - 2rem)' }"
+>
+  <form class="flex flex-col gap-4" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="flex flex-col gap-1.5">
+      <label for="store-code" class="text-sm font-medium text-heading">Store code</label>
+      <input
+        pInputText
+        id="store-code"
+        class="w-full"
+        formControlName="code"
+        autocomplete="off"
+        spellcheck="false"
+        autocapitalize="characters"
+        placeholder="MUJI-NUVALI"
+        [attr.maxlength]="codeMaxLength"
+        [invalid]="fieldInvalid('code')"
+        [attr.aria-invalid]="fieldInvalid('code') || null"
+        [attr.aria-describedby]="fieldInvalid('code') ? 'store-code-error' : 'store-code-hint'"
+      />
+      @if (fieldInvalid('code')) {
+        <small id="store-code-error" class="flex items-center gap-1.5 text-xs text-muted-destructive-foreground" role="alert">
+          <i class="pi pi-exclamation-circle text-xs" aria-hidden="true"></i>{{ fieldError('code') }}
+        </small>
+      } @else {
+        <small id="store-code-hint" class="text-xs text-muted">
+          The code the tills send. Upper or lower case both match.
+        </small>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label for="store-name" class="text-sm font-medium text-heading">Store name</label>
+      <input
+        pInputText
+        id="store-name"
+        class="w-full"
+        formControlName="name"
+        autocomplete="off"
+        placeholder="MUJI SM Nuvali"
+        [attr.maxlength]="nameMaxLength"
+        [invalid]="fieldInvalid('name')"
+        [attr.aria-invalid]="fieldInvalid('name') || null"
+        [attr.aria-describedby]="fieldInvalid('name') ? 'store-name-error' : null"
+      />
+      @if (fieldInvalid('name')) {
+        <small id="store-name-error" class="flex items-center gap-1.5 text-xs text-muted-destructive-foreground" role="alert">
+          <i class="pi pi-exclamation-circle text-xs" aria-hidden="true"></i>{{ fieldError('name') }}
+        </small>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label for="store-address" class="text-sm font-medium text-heading">
+        Address <span class="font-normal text-muted">optional</span>
+      </label>
+      <textarea
+        pTextarea
+        id="store-address"
+        class="w-full resize-none"
+        rows="2"
+        formControlName="address"
+        autocomplete="off"
+        placeholder="SM City Nuvali, Santa Rosa, Laguna"
+        [attr.maxlength]="addressMaxLength"
+        [invalid]="fieldInvalid('address')"
+        [attr.aria-invalid]="fieldInvalid('address') || null"
+        [attr.aria-describedby]="fieldInvalid('address') ? 'store-address-error' : null"
+      ></textarea>
+      @if (fieldInvalid('address')) {
+        <small id="store-address-error" class="flex items-center gap-1.5 text-xs text-muted-destructive-foreground" role="alert">
+          <i class="pi pi-exclamation-circle text-xs" aria-hidden="true"></i>{{ fieldError('address') }}
+        </small>
+      }
+    </div>
+
+    <div
+      class="flex flex-col gap-1.5"
+      role="group"
+      aria-labelledby="store-photo-label"
+      [attr.aria-describedby]="photoError() ? 'store-photo-error' : 'store-photo-hint'"
+    >
+      <span id="store-photo-label" class="text-sm font-medium text-heading">
+        Photo <span class="font-normal text-muted">optional</span>
+      </span>
+      <div class="flex items-center gap-3">
+        <div class="aspect-[2/1] w-36 shrink-0 overflow-hidden rounded-card border border-divider bg-subtle">
+          @if (previewUrl(); as url) {
+            <img [src]="url" alt="Store photo preview" class="block h-full w-full object-cover" />
+          } @else {
+            <div class="flex h-full w-full items-center justify-center text-faint">
+              <i class="pi pi-shop text-lg" aria-hidden="true"></i>
+            </div>
+          }
+        </div>
+        <div class="flex flex-wrap items-center gap-1">
+          <p-button
+            [label]="hasPhoto() ? 'Replace photo' : 'Choose photo'"
+            icon="pi pi-upload"
+            severity="secondary"
+            [outlined]="true"
+            size="small"
+            [disabled]="submitting()"
+            (onClick)="photoInput.click()"
+          />
+          @if (hasPhoto()) {
+            <p-button
+              label="Remove"
+              severity="secondary"
+              [text]="true"
+              size="small"
+              [disabled]="submitting()"
+              (onClick)="removePhoto()"
+            />
+          }
+        </div>
+      </div>
+      <input #photoInput type="file" hidden [accept]="photoAccept" (change)="onPhotoPicked($event)" />
+      @if (photoError()) {
+        <small id="store-photo-error" class="flex items-center gap-1.5 text-xs text-muted-destructive-foreground" role="alert">
+          <i class="pi pi-exclamation-circle text-xs" aria-hidden="true"></i>{{ photoError() }}
+        </small>
+      } @else {
+        <small id="store-photo-hint" class="text-xs text-muted">JPG, PNG or WebP, up to 5 MB.</small>
+      }
+    </div>
+
+    @if (serverError()) {
+      <p-message severity="error" icon="pi pi-times-circle" styleClass="ds-message">
+        <span>{{ serverError() }}</span>
+      </p-message>
+    }
+  </form>
+
+  <ng-template #footer>
+    <p-button label="Cancel" severity="secondary" [text]="true" [disabled]="submitting()" (onClick)="cancel()" />
+    <p-button [label]="submitLabel()" [loading]="submitting()" (onClick)="submit()" />
+  </ng-template>
+</p-dialog>

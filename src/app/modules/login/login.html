@@ -1,73 +1,76 @@
-<section class="login" aria-labelledby="login-title">
-  <div class="login__brand">
-    <span class="login__mark" aria-hidden="true">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
-        <path
-          d="M12 2.5l7 2.6v5.2c0 4.4-2.9 8.2-7 9.2-4.1-1-7-4.8-7-9.2V5.1l7-2.6z"
-          stroke="currentColor"
-          stroke-width="1.7"
-          stroke-linejoin="round"
-        />
-        <circle cx="12" cy="10" r="2.1" stroke="currentColor" stroke-width="1.7" />
-        <path d="M12 12.1v3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-      </svg>
-    </span>
-    <p class="login__product">MUJI EAS</p>
+<section class="space-y-8" aria-labelledby="login-title">
+  <div class="flex items-center gap-2 text-primary">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+      <path
+        d="M12 2.5l7 2.6v5.2c0 4.4-2.9 8.2-7 9.2-4.1-1-7-4.8-7-9.2V5.1l7-2.6z"
+        stroke="currentColor"
+        stroke-width="1.9"
+        stroke-linejoin="round"
+      />
+      <circle cx="12" cy="10" r="2.1" stroke="currentColor" stroke-width="1.9" />
+      <path d="M12 12.1v3.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+    </svg>
+    <p class="m-0 font-heading text-lg font-semibold">MUJI EAS</p>
   </div>
 
-  <header>
-    <h1 id="login-title" class="login__title">Sign in</h1>
-    <p class="login__sub">Use your store account to open the console.</p>
+  <header class="space-y-2">
+    <h1 id="login-title" class="m-0 text-2xl font-bold text-heading">Sign in</h1>
+    <p class="m-0 text-sm">Use your store account to open the console.</p>
   </header>
 
-  <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-    <div class="field">
-      <label class="field__label" for="email">Email</label>
+  <form class="space-y-5" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="flex flex-col gap-1.5">
+      <label for="email" class="text-sm font-medium text-heading">Email</label>
       <input
+        pInputText
         id="email"
         type="email"
+        class="w-full"
         formControlName="email"
+        placeholder="you@example.com"
         autocomplete="username"
         spellcheck="false"
         autocapitalize="none"
+        [invalid]="emailInvalid()"
         [attr.aria-invalid]="emailInvalid() || null"
         [attr.aria-describedby]="emailInvalid() ? 'email-error' : null"
       />
       @if (emailInvalid()) {
-        <p id="email-error" class="field__error" role="alert">
-          <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
-          {{ emailError() }}
-        </p>
+        <small id="email-error" class="text-xs text-muted-destructive-foreground" role="alert">{{ emailError() }}</small>
       }
     </div>
 
-    <div class="field">
-      <label class="field__label" for="password">Password</label>
+    <div class="flex flex-col gap-1.5">
+      <label for="password" class="text-sm font-medium text-heading">Password</label>
       <input
+        pInputText
         id="password"
         type="password"
+        class="w-full"
         formControlName="password"
+        placeholder="Enter your password"
         autocomplete="current-password"
+        [invalid]="passwordInvalid()"
         [attr.aria-invalid]="passwordInvalid() || null"
         [attr.aria-describedby]="passwordInvalid() ? 'password-error' : null"
       />
       @if (passwordInvalid()) {
-        <p id="password-error" class="field__error" role="alert">
-          <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
-          Password is required.
-        </p>
+        <small id="password-error" class="text-xs text-muted-destructive-foreground" role="alert">Password is required.</small>
       }
     </div>
 
     @if (errorMsg()) {
-      <p class="form__error" role="alert">
-        <i class="pi pi-times-circle" aria-hidden="true"></i>
-        {{ errorMsg() }}
-      </p>
+      <p-message severity="error" icon="pi pi-times-circle" styleClass="ds-message">
+        <span>{{ errorMsg() }}</span>
+      </p-message>
     }
 
-    <button type="submit" class="login__submit" [disabled]="submitting()" [attr.aria-busy]="submitting()">
-      {{ submitting() ? 'Signing in' : 'Sign in' }}
-    </button>
+    <p-button
+      type="submit"
+      [label]="submitting() ? 'Signing in' : 'Sign in'"
+      styleClass="w-full"
+      [loading]="submitting()"
+      [disabled]="submitting()"
+    />
   </form>
 </section>

@@ -44,6 +44,8 @@ describe('TransactionDetail', () => {
     req.flush({
       id: 'sale-1',
       storeCode: 'MNL01',
+      storeName: 'MUJI Manila',
+      registered: true,
       deviceId: 'TILL-4',
       cashierName: null,
       startedAt: '2026-10-28T02:15:00.000Z',
@@ -64,5 +66,8 @@ describe('TransactionDetail', () => {
     expect(text).toContain('E280689400004012AB000002');
     expect(text).toContain('E280689400004012AB000003');
     expect(text).toContain('None');
+    expect(text).toContain('MUJI Manila');
+    expect(text).toContain('POS Number');
+    expect(text).not.toContain('Till');
   });
 });

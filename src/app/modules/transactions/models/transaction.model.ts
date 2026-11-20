@@ -5,7 +5,13 @@ export type { PaginatedResponse, PaginationMeta } from '../../../core/api/pagina
 /** One till sale, as returned by the list. Dates are ISO strings. */
 export interface TransactionSummary {
   id: string;
+  /** The store code exactly as the till sent it. */
   storeCode: string;
+  /** Name of the registered store whose code matches (any case), or null. Worked out by the server on each read. */
+  storeName: string | null;
+  /** Whether a registered store matches `storeCode`. */
+  registered: boolean;
+  /** The till's device id, shown as the POS number. */
   deviceId: string;
   cashierName: string | null;
   startedAt: string;

@@ -12,28 +12,38 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, Subject, catchError, switchMap, tap } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
-import { PaginatorModule } from 'primeng/paginator';
-import { SkeletonModule } from 'primeng/skeleton';
-import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
+import { MessageModule } from 'primeng/message';
+import { SkeletonModule } from 'primeng/skeleton';
+import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 
 import { environment } from '../../../environments/environment';
+import { PageLayout } from '../../shared/ui/page-layout/page-layout';
+import { ListPageChange, ListPaginator } from '../../shared/ui/list-paginator/list-paginator';
+import { EmptyState } from '../../shared/ui/empty-state/empty-state';
 import { AlarmEventsService } from './services/alarm-events.service';
 import { AlarmEvent } from './models/alarm-event.model';
-
-interface PageChange {
-  first?: number;
-  rows?: number;
-}
 
 @Component({
   selector: 'app-alarm-events',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, ButtonModule, PaginatorModule, SkeletonModule, TooltipModule, DialogModule, TagModule],
+  imports: [
+    DatePipe,
+    PageLayout,
+    ListPaginator,
+    EmptyState,
+    ButtonModule,
+    DialogModule,
+    MessageModule,
+    SkeletonModule,
+    TableModule,
+    TagModule,
+    TooltipModule,
+  ],
   templateUrl: './alarm-events.html',
-  styleUrl: './alarm-events.css',
 })
 export class AlarmEvents implements OnInit {
   private readonly service = inject(AlarmEventsService);
@@ -49,7 +59,6 @@ export class AlarmEvents implements OnInit {
   protected readonly previewVisible = signal(false);
   protected readonly previewEvent = signal<AlarmEvent | null>(null);
 
-  protected readonly first = computed(() => (this.page() - 1) * this.limit());
   protected readonly hasRows = computed(() => this.items().length > 0);
   protected readonly skeletons = computed(() => Array.from({ length: this.limit() }));
 
@@ -89,10 +98,9 @@ export class AlarmEvents implements OnInit {
     this.reload$.next();
   }
 
-  protected onPage(event: PageChange): void {
-    const rows = event.rows ?? this.limit();
-    this.limit.set(rows);
-    this.page.set(Math.floor((event.first ?? 0) / rows) + 1);
+  protected onPage(event: ListPageChange): void {
+    this.limit.set(event.pageSize);
+    this.page.set(event.page);
     this.load();
   }
 

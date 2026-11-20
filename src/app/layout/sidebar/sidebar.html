@@ -1,0 +1,51 @@
+@if (layout.sidebarOpen()) {
+  <div
+    class="fixed inset-x-0 bottom-0 top-14 bg-foreground/20 z-30 md:hidden"
+    (click)="layout.closeSidebar()"
+    aria-hidden="true"
+  ></div>
+}
+
+<nav
+  id="app-sidebar"
+  class="sidebar-shell fixed top-14 bottom-0 left-0 z-40 w-64 overflow-y-auto bg-chrome border-r border-divider transition-transform duration-200 ease-in-out md:sticky md:z-auto md:w-full md:h-[calc(100dvh-3.5rem)] md:translate-x-0"
+  [class.-translate-x-full]="!layout.sidebarOpen()"
+  [class.translate-x-0]="layout.sidebarOpen()"
+  aria-label="Primary"
+>
+  <div class="sidebar-nav flex flex-col gap-5 px-3 py-4">
+    @for (section of sections; track section.id) {
+      <div>
+        <p class="sidebar-section-title mb-1 px-2.5 text-xs font-medium text-muted" [id]="'nav-' + section.id">
+          {{ section.title }}
+        </p>
+        <ul class="flex flex-col gap-px" [attr.aria-labelledby]="'nav-' + section.id">
+          @for (link of section.items; track link.route) {
+            <li>
+              <a
+                [routerLink]="link.route"
+                routerLinkActive
+                #rla="routerLinkActive"
+                ariaCurrentWhenActive="page"
+                [class]="rla.isActive
+                  ? 'bg-selected text-heading font-medium'
+                  : 'text-body hover:bg-hover hover:text-heading'"
+                class="sidebar-link flex items-center gap-2.5 px-2.5 py-1.5 rounded-base text-sm transition-colors"
+                [attr.title]="layout.sidebarCollapsed() ? link.label : null"
+                (click)="layout.closeSidebar()"
+              >
+                <i
+                  [class]="'pi ' + link.icon + ' text-base w-4 text-center shrink-0'"
+                  [class.opacity-60]="!rla.isActive"
+                  [class.text-primary]="rla.isActive"
+                  aria-hidden="true"
+                ></i>
+                <span class="sidebar-label truncate">{{ link.label }}</span>
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </div>
+</nav>

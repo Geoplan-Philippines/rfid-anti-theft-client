@@ -1,0 +1,73 @@
+<header class="app-header h-14 px-3 sm:px-4 border-b border-divider bg-chrome flex justify-between items-center gap-2">
+  <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+    <span class="header-icon-btn shrink-0 md:hidden">
+      <button
+        pButton
+        type="button"
+        [text]="true"
+        severity="secondary"
+        (click)="layout.toggleSidebar()"
+        aria-label="Toggle menu"
+        [attr.aria-expanded]="layout.sidebarOpen()"
+        aria-controls="app-sidebar"
+      >
+        <i class="pi pi-bars" pButtonIcon></i>
+      </button>
+    </span>
+
+    <a routerLink="/registry" class="brand inline-flex items-center gap-2 min-w-0 rounded-base text-primary" aria-label="MUJI EAS, home">
+      <svg class="shrink-0" viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+        <path
+          d="M12 2.5l7 2.6v5.2c0 4.4-2.9 8.2-7 9.2-4.1-1-7-4.8-7-9.2V5.1l7-2.6z"
+          stroke="currentColor"
+          stroke-width="1.9"
+          stroke-linejoin="round"
+        />
+        <circle cx="12" cy="10" r="2.1" stroke="currentColor" stroke-width="1.9" />
+        <path d="M12 12.1v3.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+      </svg>
+      <span class="font-heading text-lg sm:text-xl font-semibold leading-none truncate">MUJI EAS</span>
+    </a>
+
+    <!-- Desktop sidebar collapse; small screens use the menu button above instead. -->
+    <span class="header-icon-btn hidden md:inline-flex shrink-0">
+      <button
+        pButton
+        type="button"
+        [text]="true"
+        severity="secondary"
+        (click)="layout.toggleSidebarCollapsed()"
+        [attr.aria-label]="layout.sidebarCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'"
+        [attr.aria-expanded]="!layout.sidebarCollapsed()"
+        aria-controls="app-sidebar"
+      >
+        <i
+          [class]="layout.sidebarCollapsed() ? 'pi pi-angle-double-right' : 'pi pi-angle-double-left'"
+          pButtonIcon
+        ></i>
+      </button>
+    </span>
+  </div>
+
+  <div class="header-actions flex items-center gap-1 sm:gap-2 shrink-0 min-w-0">
+    @if (currentUser(); as user) {
+      <p-avatar
+        [label]="initial()"
+        shape="circle"
+        class="hidden sm:inline-flex w-8 h-8 text-sm font-semibold bg-secondary text-secondary-foreground"
+        aria-hidden="true"
+      />
+      <span class="hidden sm:inline max-w-56 truncate text-sm text-heading">{{ user.email }}</span>
+    }
+    <p-button
+      icon="pi pi-sign-out"
+      [text]="true"
+      severity="secondary"
+      class="header-icon-btn"
+      ariaLabel="Log out"
+      pTooltip="Log out"
+      tooltipPosition="bottom"
+      (onClick)="logout()"
+    />
+  </div>
+</header>

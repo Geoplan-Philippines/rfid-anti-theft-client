@@ -1,183 +1,153 @@
-<section class="page" aria-labelledby="page-title">
-  <header class="page__head">
-    <div class="page__heading">
-      <h1 id="page-title" class="page__title">Alarm Events</h1>
-      <p class="page__sub">Tags that were not on the sold list when they passed a gate, newest first.</p>
-    </div>
-    <p-button
-      label="Refresh"
-      icon="pi pi-refresh"
-      severity="secondary"
-      [outlined]="true"
-      [loading]="loading()"
-      (onClick)="load()"
-    />
-  </header>
+<app-page heading="Alarm Events" subtitle="Tags that were not on the sold list when they passed a gate, newest first.">
+  <p-button
+    pageActions
+    label="Refresh"
+    icon="pi pi-refresh"
+    severity="secondary"
+    [outlined]="true"
+    [loading]="loading()"
+    (onClick)="load()"
+  />
 
-  <div class="toolbar">
-    <p class="toolbar__count" aria-live="polite">
-      @if (!loading() && !errorMsg()) {
-        {{ total() }} {{ total() === 1 ? 'event' : 'events' }}
-      }
-    </p>
-  </div>
-
-  <div class="panel">
-    @if (loading()) {
-      <div class="log-scroll">
-        <table class="log" aria-hidden="true">
-          <thead>
-            <tr>
-              <th scope="col" class="log__col-epc">EPC</th>
-              <th scope="col">Reader</th>
-              <th scope="col" class="log__col-status">Status</th>
-              <th scope="col" class="log__col-capture">Capture</th>
-              <th scope="col" class="log__col-date">Scanned</th>
-              <th scope="col" class="log__col-date">Recorded</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (s of skeletons(); track $index) {
-              <tr>
-                <td><p-skeleton width="12rem" height="0.9rem" /></td>
-                <td><p-skeleton width="6rem" height="0.9rem" /></td>
-                <td><p-skeleton width="5rem" height="0.9rem" /></td>
-                <td><p-skeleton width="4rem" height="0.9rem" /></td>
-                <td><p-skeleton width="9rem" height="0.9rem" /></td>
-                <td><p-skeleton width="9rem" height="0.9rem" /></td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    } @else if (errorMsg()) {
-      <div class="state state--error" role="alert">
-        <i class="pi pi-exclamation-triangle state__icon state__icon--alarm" aria-hidden="true"></i>
-        <p class="state__title">{{ errorMsg() }}</p>
-        <p-button label="Try again" icon="pi pi-refresh" severity="secondary" [outlined]="true" (onClick)="load()" />
-      </div>
-    } @else if (!hasRows()) {
-      <div class="state">
-        <i class="pi pi-shield state__icon" aria-hidden="true"></i>
-        <p class="state__title">No alarm events yet</p>
-        <p class="state__hint">
-          When a tag that is not on the sold list passes a gate, the alarm is logged here.
-        </p>
-      </div>
-    } @else {
-      <div class="log-scroll">
-        <table class="log">
-          <caption class="sr-only">Alarm events, newest first</caption>
-          <thead>
-            <tr>
-              <th scope="col" class="log__col-epc">EPC</th>
-              <th scope="col">Reader</th>
-              <th scope="col" class="log__col-status">Status</th>
-              <th scope="col" class="log__col-capture">Capture</th>
-              <th scope="col" class="log__col-date">Scanned</th>
-              <th scope="col" class="log__col-date">Recorded</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (event of items(); track event.id) {
-              <tr [class.row--alert]="event.captureImageUrl">
-                <td>
-                  <div class="log__epc">
-                    <span class="u-mono log__epc-value">{{ event.epc }}</span>
-                    <button
-                      type="button"
-                      class="iconbtn iconbtn--ghost log__copy"
-                      (click)="copyEpc(event.epc)"
-                      pTooltip="Copy EPC"
-                      tooltipPosition="top"
-                      [attr.aria-label]="'Copy EPC ' + event.epc"
-                    >
-                      <i class="pi pi-copy" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                </td>
-                <td>
-                  <span class="reader">
-                    <i class="pi pi-wifi reader__icon" aria-hidden="true"></i>
-                    <span class="u-mono">{{ event.readerName }}</span>
-                  </span>
-                </td>
-                <td>
-                  @if (event.captureImageUrl) {
-                    <p-tag severity="danger" value="THEFT ALERT" icon="pi pi-exclamation-triangle" />
-                  } @else {
-                    <p-tag severity="info" value="Logged" icon="pi pi-check" />
-                  }
-                </td>
-                <td>
-                  @if (getCaptureUrl(event); as url) {
-                    <button
-                      type="button"
-                      class="capture-thumb"
-                      (click)="openPreview(event)"
-                      pTooltip="View CCTV capture"
-                      tooltipPosition="top"
-                    >
-                      <img
-                        [src]="url"
-                        alt="CCTV capture"
-                        class="capture-thumb__img"
-                        loading="lazy"
-                      />
-                      <span class="capture-thumb__overlay">
-                        <i class="pi pi-search-plus" aria-hidden="true"></i>
-                      </span>
-                    </button>
-                  } @else {
-                    <span class="u-muted">—</span>
-                  }
-                </td>
-                <td class="u-mono log__date">{{ event.scannedAt | date: 'MMM d, y · HH:mm:ss' }}</td>
-                <td class="u-mono log__date log__date--muted">{{ event.createdAt | date: 'MMM d, y · HH:mm:ss' }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-
-      <div class="log__foot">
-        <p-paginator
-          [first]="first()"
-          [rows]="limit()"
-          [totalRecords]="total()"
-          [rowsPerPageOptions]="[10, 20, 50]"
-          (onPageChange)="onPage($event)"
-          [showCurrentPageReport]="true"
-          currentPageReportTemplate="{first}–{last} of {totalRecords}"
-        />
-      </div>
+  <p pageToolbarEnd class="ds-toolbar-count" aria-live="polite">
+    @if (!loading() && !errorMsg()) {
+      {{ total() }} {{ total() === 1 ? 'event' : 'events' }}
     }
-  </div>
-</section>
+  </p>
 
-<!-- CCTV Capture Preview Dialog -->
+  @if (loading()) {
+    <div class="ds-table-skeleton" role="status">
+      <span class="ds-sr-only">Loading alarm events</span>
+      @for (s of skeletons(); track $index) {
+        <div class="skeleton-row">
+          <p-skeleton width="12rem" height="0.75rem" />
+          <p-skeleton width="6rem" height="0.75rem" />
+          <p-skeleton width="5rem" height="0.75rem" />
+          <p-skeleton width="3.5rem" height="1.75rem" />
+          <p-skeleton width="9rem" height="0.75rem" />
+        </div>
+      }
+    </div>
+  } @else if (errorMsg()) {
+    <p-message severity="error" styleClass="ds-message">
+      <span>{{ errorMsg() }}</span>
+      <p-button label="Try again" icon="pi pi-refresh" size="small" severity="danger" [text]="true" (onClick)="load()" />
+    </p-message>
+  } @else if (!hasRows()) {
+    <app-empty-state
+      icon="pi pi-shield"
+      heading="No alarm events yet"
+      description="When a tag that is not on the sold list passes a gate, the alarm is logged here."
+    />
+  } @else {
+    <div>
+      <div class="ds-table-scroll">
+        <p-table class="ds-table" [value]="items()" dataKey="id" [rowHover]="true" [tableStyle]="{ 'min-width': '60rem' }">
+          <ng-template #header>
+            <tr>
+              <th scope="col">EPC</th>
+              <th scope="col">Reader</th>
+              <th scope="col">Status</th>
+              <th scope="col">Capture</th>
+              <th scope="col">Scanned</th>
+              <th scope="col">Recorded</th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-event>
+            <tr>
+              <td>
+                <div class="flex items-center gap-1">
+                  <span class="font-medium text-heading ds-num whitespace-nowrap">{{ event.epc }}</span>
+                  <p-button
+                    icon="pi pi-copy"
+                    severity="secondary"
+                    [text]="true"
+                    [rounded]="true"
+                    size="small"
+                    [ariaLabel]="'Copy EPC ' + event.epc"
+                    pTooltip="Copy EPC"
+                    tooltipPosition="top"
+                    (onClick)="copyEpc(event.epc)"
+                  />
+                </div>
+              </td>
+              <td>
+                <span class="inline-flex items-center gap-1.5 whitespace-nowrap">
+                  <i class="pi pi-wifi text-xs text-faint" aria-hidden="true"></i>
+                  {{ event.readerName }}
+                </span>
+              </td>
+              <td>
+                @if (event.captureImageUrl) {
+                  <p-tag severity="danger" value="THEFT ALERT" icon="pi pi-exclamation-triangle" [rounded]="true" />
+                } @else {
+                  <p-tag severity="info" value="Logged" icon="pi pi-check" [rounded]="true" />
+                }
+              </td>
+              <td>
+                @if (getCaptureUrl(event); as url) {
+                  <button
+                    type="button"
+                    class="block w-14 h-10 p-0 overflow-hidden rounded-card border border-border bg-subtle cursor-pointer transition-colors hover:border-primary"
+                    (click)="openPreview(event)"
+                    pTooltip="View CCTV capture"
+                    tooltipPosition="top"
+                  >
+                    <img [src]="url" alt="CCTV capture" class="w-full h-full object-cover" loading="lazy" />
+                  </button>
+                } @else {
+                  <span class="text-muted" aria-hidden="true">—</span>
+                  <span class="ds-sr-only">No capture</span>
+                }
+              </td>
+              <td class="text-muted ds-num whitespace-nowrap">{{ event.scannedAt | date: 'MMM d, y · HH:mm:ss' }}</td>
+              <td class="text-muted ds-num whitespace-nowrap">{{ event.createdAt | date: 'MMM d, y · HH:mm:ss' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <app-list-paginator
+        [total]="total()"
+        [page]="page()"
+        [pageSize]="limit()"
+        itemLabel="events"
+        (pageChange)="onPage($event)"
+      />
+    </div>
+  }
+</app-page>
+
+<!-- CCTV capture preview -->
 <p-dialog
   header="CCTV Capture"
+  closeAriaLabel="Close"
   [visible]="previewVisible()"
   (visibleChange)="closePreview()"
   [modal]="true"
   [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
   [dismissableMask]="true"
-  [style]="{ 'max-width': '720px', width: '95vw' }"
+  [style]="{ width: '720px', maxWidth: 'calc(100vw - 2rem)' }"
 >
   @if (previewEvent(); as evt) {
-    <div class="preview">
-      <div class="preview__meta">
-        <p><strong>EPC:</strong> <span class="u-mono">{{ evt.epc }}</span></p>
-        <p><strong>Reader:</strong> {{ evt.readerName || '—' }}</p>
-        <p><strong>Time:</strong> {{ evt.scannedAt | date: 'MMM d, y · HH:mm:ss' }}</p>
-      </div>
+    <div class="flex flex-col gap-4">
+      <dl class="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-3 m-0">
+        <div class="flex flex-col gap-1 min-w-0">
+          <dt class="text-xs font-medium text-muted">EPC</dt>
+          <dd class="m-0 text-sm text-heading ds-num break-all">{{ evt.epc }}</dd>
+        </div>
+        <div class="flex flex-col gap-1 min-w-0">
+          <dt class="text-xs font-medium text-muted">Reader</dt>
+          <dd class="m-0 text-sm text-heading">{{ evt.readerName || '—' }}</dd>
+        </div>
+        <div class="flex flex-col gap-1 min-w-0">
+          <dt class="text-xs font-medium text-muted">Time</dt>
+          <dd class="m-0 text-sm text-heading ds-num">{{ evt.scannedAt | date: 'MMM d, y · HH:mm:ss' }}</dd>
+        </div>
+      </dl>
       @if (getCaptureUrl(evt); as url) {
-        <img
-          [src]="url"
-          alt="CCTV capture for EPC {{ evt.epc }}"
-          class="preview__img"
-        />
+        <img [src]="url" alt="CCTV capture for EPC {{ evt.epc }}" class="w-full rounded-card border border-divider" />
       }
     </div>
   }

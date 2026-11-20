@@ -1,0 +1,59 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+/* On small screens the sidebar is an off-canvas drawer, so the host reserves
+   no horizontal space. A closed drawer is also hidden from keyboard and
+   screen readers once it has slid away. */
+@media (max-width: 767.98px) {
+  :host {
+    width: 0;
+    flex: 0 0 0;
+  }
+
+  :host(:not(.sidebar-open)) .sidebar-shell {
+    visibility: hidden;
+    transition-property: translate, visibility;
+    transition-duration: 200ms, 0s;
+    transition-delay: 0s, 200ms;
+  }
+}
+
+@media (min-width: 768px) {
+  :host {
+    width: 16rem;
+    flex: 0 0 16rem;
+    transition: width 200ms ease-in-out, flex-basis 200ms ease-in-out;
+  }
+
+  :host(.sidebar-collapsed) {
+    width: 4.75rem;
+    flex-basis: 4.75rem;
+  }
+
+  :host(.sidebar-collapsed) .sidebar-nav {
+    gap: 0.75rem;
+    padding-inline: 0.75rem;
+  }
+
+  :host(.sidebar-collapsed) .sidebar-section-title {
+    display: none;
+  }
+
+  /* Icon rail: labels leave the layout but stay as each link's accessible name. */
+  :host(.sidebar-collapsed) .sidebar-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  :host(.sidebar-collapsed) .sidebar-link {
+    justify-content: center;
+    gap: 0;
+    padding-inline: 0.75rem;
+  }
+}

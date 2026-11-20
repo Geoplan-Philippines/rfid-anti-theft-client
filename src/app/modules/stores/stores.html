@@ -1,0 +1,86 @@
+<app-page heading="Stores" subtitle="Stores on the system. A sale shows its store's name when the till's store code matches one here.">
+  <p-button pageActions label="New store" icon="pi pi-plus" (onClick)="openCreate()" />
+
+  @if (loading()) {
+    <div role="status">
+      <span class="ds-sr-only">Loading stores</span>
+      <ul class="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(min(20rem,100%),1fr))] gap-5 p-0" aria-hidden="true">
+        @for (s of skeletons(); track $index) {
+          <li class="overflow-hidden rounded-card border border-divider bg-surface">
+            <div class="aspect-[2/1] border-b border-divider bg-subtle"></div>
+            <div class="flex flex-col gap-2.5 p-4">
+              <p-skeleton width="60%" height="0.875rem" />
+              <p-skeleton width="85%" height="0.75rem" />
+              <p-skeleton width="6rem" height="1.25rem" borderRadius="999px" styleClass="mt-3" />
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  } @else if (errorMsg()) {
+    <p-message severity="error" styleClass="ds-message">
+      <span>{{ errorMsg() }}</span>
+      <p-button label="Try again" icon="pi pi-refresh" size="small" severity="danger" [text]="true" (onClick)="load()" />
+    </p-message>
+  } @else if (!hasStores()) {
+    <app-empty-state
+      icon="pi pi-shop"
+      heading="No stores yet"
+      description="Add a store so its sales show the store name instead of only the code."
+    >
+      <p-button label="New store" icon="pi pi-plus" (onClick)="openCreate()" />
+    </app-empty-state>
+  } @else {
+    <div>
+      <ul class="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(min(20rem,100%),1fr))] gap-5 p-0" role="list" aria-label="Stores">
+        @for (store of items(); track store.id) {
+          <li>
+            <app-store-card [store]="store" (edit)="openEdit($event)" (remove)="onDelete($event)" />
+          </li>
+        }
+      </ul>
+      <app-list-paginator
+        class="mt-5 block"
+        [total]="total()"
+        [page]="page()"
+        [pageSize]="limit()"
+        [pageSizeOptions]="pageSizes"
+        itemLabel="stores"
+        (pageChange)="onPage($event)"
+      />
+    </div>
+  }
+</app-page>
+
+<app-store-form-dialog
+  [open]="dialogOpen()"
+  [store]="editingStore()"
+  [submitting]="submitting()"
+  [serverError]="formError()"
+  (save)="onSave($event)"
+  (cancelled)="closeDialog()"
+/>
+
+<p-dialog
+  [visible]="!!storeToDelete()"
+  (visibleChange)="$event ? null : cancelDelete()"
+  header="Delete store"
+  [role]="'alertdialog'"
+  closeAriaLabel="Close"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '440px', maxWidth: 'calc(100vw - 2rem)' }"
+>
+  @if (storeToDelete(); as store) {
+    <p class="m-0 text-sm text-body">
+      Delete <strong class="font-medium text-heading">{{ store.name }}</strong> and its photo? Sales from
+      <strong class="font-medium text-heading">{{ store.code }}</strong> are kept, but show “Not registered” until a
+      store with that code is added again. This can't be undone.
+    </p>
+  }
+  <ng-template #footer>
+    <p-button label="Cancel" severity="secondary" [text]="true" (onClick)="cancelDelete()" />
+    <p-button label="Delete store" severity="danger" (onClick)="confirmDelete()" />
+  </ng-template>
+</p-dialog>

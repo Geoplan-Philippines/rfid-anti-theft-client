@@ -19,13 +19,19 @@ Use the relevant skill when the task matches the skill description.
 Before building or styling any UI, read:
 
 - `PRODUCT.md` — strategy: register (product), users, purpose, anti-references, design principles.
-- `DESIGN.md` — visual system: tokens, palette, typography, components (normative).
-- `.impeccable/design.json` — sidecar: tonal ramps, motion, component snippets.
+- `DESIGN.md` — visual system: tokens, typography, spacing, components (normative).
 
-North Star: **"The Instrument Panel."** Light, pure-white surfaces on a faint cool canvas;
-one cerulean (`oklch(0.55 0.14 233)`) for identity; signal red rationed to genuine alarm
-states only; IBM Plex Sans for UI, IBM Plex Mono for every machine value (EPC, reader ID,
-timestamp, count). Depth from hairlines, not shadow. State is never color-only.
+The visual system is **Meedo's** (Geoplan-Philippines/meedo-client, `staging`): the same
+colour tokens, type, spacing and radius. **Light theme only**: no dark mode, no theme toggle.
+Source of truth in code: `src/styles.css` (tokens + Tailwind mapping), `src/design-system.css`
+(list-page `ds-*` rules), `src/app/core/theme/app-preset.ts` (PrimeNG tokens).
+
+In brief: Poppins for headings, Work Sans for everything else; primary `#0B4EA2`; colours
+only through theme tokens (`bg-primary`, `text-muted`, `border-divider`, ...), never hex in
+components. Badges are `p-tag` muted pairs (AA on their fill); never use `--destructive` as
+text. Build with PrimeNG components and the shared `app-page`, `app-list-paginator` and
+`app-empty-state`, not one-off CSS. Lists paginate with `app-list-paginator` (summary left,
+pages right). State is never colour-only.
 
 Explicitly avoid: legacy ERP density, generic AI dashboard (gradient stat cards, hero
 metrics), flashy/playful flourishes, and the stock PrimeNG Aura theme.

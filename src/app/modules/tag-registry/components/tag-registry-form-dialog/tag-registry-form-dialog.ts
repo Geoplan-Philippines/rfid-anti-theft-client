@@ -19,6 +19,7 @@ import {
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
 
 import { KnownEpc, SaveEpcInput, groupEpc, normalizeEpc } from '../../models/tag-registry.model';
 
@@ -36,9 +37,8 @@ function epcValidator(control: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-tag-registry-form-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, DialogModule, ButtonModule, InputTextModule],
+  imports: [ReactiveFormsModule, DialogModule, ButtonModule, InputTextModule, MessageModule],
   templateUrl: './tag-registry-form-dialog.html',
-  styleUrl: './tag-registry-form-dialog.css',
 })
 export class TagRegistryFormDialog {
   private readonly fb = inject(NonNullableFormBuilder);

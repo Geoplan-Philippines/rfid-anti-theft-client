@@ -18,6 +18,12 @@ export const routes: Routes = [
       import('./modules/tag-registry/tag-registry.routes').then((m) => m.TAG_REGISTRY_ROUTES),
   },
   {
+    path: 'stores',
+    title: 'Stores · MUJI EAS',
+    canActivate: [authGuard],
+    loadChildren: () => import('./modules/stores/stores.routes').then((m) => m.STORES_ROUTES),
+  },
+  {
     path: 'transactions',
     title: 'Transactions · MUJI EAS',
     canActivate: [authGuard],
