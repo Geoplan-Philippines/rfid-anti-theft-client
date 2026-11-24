@@ -1,4 +1,6 @@
+const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://meedo-v3-api-stg.geoplanph.com/api/v1',
+  apiBaseUrl: `http://${host}:8001/api/v1`,
 };
