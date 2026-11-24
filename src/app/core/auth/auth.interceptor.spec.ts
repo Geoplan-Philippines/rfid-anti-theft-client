@@ -13,7 +13,14 @@ describe('authInterceptor', () => {
   let client: HttpClient;
 
   beforeEach(() => {
-    localStorage.clear();
+    // Isolate browser storage from Node's optional global localStorage implementation.
+    const storage = new Map<string, string>();
+    vi.stubGlobal('localStorage', {
+      getItem: (key: string) => storage.get(key) ?? null,
+      setItem: (key: string, value: string) => { storage.set(key, value); },
+      removeItem: (key: string) => { storage.delete(key); },
+      clear: () => { storage.clear(); },
+    });
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(withInterceptors([authInterceptor, unwrapApiInterceptor])),
@@ -26,8 +33,8 @@ describe('authInterceptor', () => {
   });
 
   afterEach(() => {
-    http.verify();
-    localStorage.clear();
+    try { http?.verify(); }
+    finally { vi.unstubAllGlobals(); }
   });
 
   it('stores the unwrapped token and sends it on the next request', () => {
